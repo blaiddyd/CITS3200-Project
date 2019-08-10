@@ -1,0 +1,2 @@
+### Components
+This is where React components. This folder is usually made up of .jsx or .js file. For more information on React components, check out https://reactjs.org/docs/components-and-props.html
