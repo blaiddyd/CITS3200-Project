@@ -20,6 +20,7 @@ export default class CustomDocument extends Document {
             href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
             rel="stylesheet"
           />
+          <title>AI Services Portal</title>
         </Head>
         <body>
           <Main />
