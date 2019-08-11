@@ -1,5 +1,6 @@
 import React from 'react'
 import App, { Container } from 'next/app'
+import Head from 'next/head'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 /**
@@ -12,6 +13,9 @@ class MyApp extends App {
 
     return (
       <Container>
+        <Head>
+          <title>AI Services Portal</title>
+        </Head>
         <Component {...pageProps} />
       </Container>
     )
