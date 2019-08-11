@@ -1,0 +1,2 @@
+### Pages
+These are the application views/pages. Any .js file here will be recognized as a route. For example, if you make a `form.js` file, you can access it on the client by navigating to http://localhost:5000/form. For more information on Next routing, check out https://nextjs.org/learn/basics/navigate-between-pages.

@@ -1,0 +1,33 @@
+{
+  "name": "cits3200-project-group24",
+  "version": "1.0.0",
+  "description": "Frontend for Google Cloud AI services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "next build",
+    "start": "node backend/index.js",
+    "dev": "nodemon backend/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekinbukulmez/CITS3200-Project.git"
+  },
+  "author": "Minh, Avi, Alex, Ekin, Eleanor, Serhat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ekinbukulmez/CITS3200-Project/issues"
+  },
+  "homepage": "https://github.com/ekinbukulmez/CITS3200-Project#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^3.20.0",
+    "next": "^9.0.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}

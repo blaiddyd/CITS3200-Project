@@ -1,0 +1,2 @@
+### Backend
+This is for the files that make up the backend of the app. Any API related code goes here. The `index.js` file is where the server is initiated. Any API endpoints/routes can be established inside routes folder.
