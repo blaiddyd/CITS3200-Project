@@ -9,24 +9,26 @@ const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const handler = nextApp.getRequestHandler()
 
-nextApp.prepare().then(() => {
-  const app = express()
-  app.use(express.json())
-  app.use(helmet())
-  app.use(cors({ origin: true }))
+nextApp
+  .prepare()
+  .then(() => {
+    const app = express()
+    app.use(express.json())
+    app.use(helmet())
+    app.use(cors({ origin: true }))
 
-  app.get('*', (req, res) => {
-    return handler(req, res)
-  })
+    app.get('*', (req, res) => {
+      return handler(req, res)
+    })
 
-  app.listen(port, err => {
-    if (err) {
-      throw err
-    }
-    console.log(`App serving at port ${port}`)
+    app.listen(port, err => {
+      if (err) {
+        throw err
+      }
+      console.log(`App serving at port ${port}`)
+    })
   })
-})
-.catch((yikes) => {
-  console.error(yikes)
-  process.exit(1)
-})
+  .catch(yikes => {
+    console.error(yikes)
+    process.exit(1)
+  })
