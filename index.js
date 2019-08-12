@@ -1,11 +1,7 @@
 /** Project entry point */
-import { startServer } from './backend/server'
+const { startServer } = require('./backend/server')
 
-startServer()
-  .then(() => {
-    console.log(`App serving on port ${port}`)
-  })
-  .catch(yikes => {
-    console.error(yikes)
-    process.exit(1)
-  })
+startServer().catch(yikes => {
+  console.error(yikes)
+  process.exit(1)
+})

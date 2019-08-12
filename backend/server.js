@@ -6,9 +6,11 @@ const cors = require('cors')
 const port = process.env.PORT || 5000
 const dev = process.env.NODE_ENV !== 'production'
 
-export const startServer = async () => {
-  const nextApp = await next({ dev }).prepare()
+exports.startServer = async () => {
+  const nextApp = next({ dev })
   const nextHandler = nextApp.getRequestHandler()
+
+  await nextApp.prepare()
 
   const app = express()
   app.use(express.json())
@@ -19,5 +21,6 @@ export const startServer = async () => {
 
   app.listen(port, error => {
     if (error) throw error
+    console.log(`Server listening on port ${port}`)
   })
 }
