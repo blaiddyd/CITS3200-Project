@@ -1,6 +1,7 @@
 import React from 'react'
 import App, { Container } from 'next/app'
 import Head from 'next/head'
+import Navbar from '../components/Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 /**
@@ -16,7 +17,10 @@ class MyApp extends App {
         <Head>
           <title>AI Services Portal</title>
         </Head>
-        <Component {...pageProps} />
+        <div>
+          <Navbar />
+          <Component {...pageProps} />
+        </div>
       </Container>
     )
   }
