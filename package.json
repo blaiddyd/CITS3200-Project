@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "next build",
-    "start": "node backend/index.js",
-    "dev": "nodemon backend/index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint --fix ."
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
   },
   "homepage": "https://github.com/ekinbukulmez/CITS3200-Project#readme",
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "bootstrap": "^4.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^3.20.0",
@@ -28,6 +31,18 @@
     "react-dom": "^16.9.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "eslint": "^5.12.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-prettier-standard": "^3.0.1",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-standard": "^4.0.0",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.18.2",
+    "prettier-config-standard": "^1.0.1"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "extends": ["prettier-standard", "plugin:react/recommended"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
