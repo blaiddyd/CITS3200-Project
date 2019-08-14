@@ -1,7 +1,12 @@
 import React from 'react'
+import PageHeader from '../components/PageHeader'
 
 const Index = () => {
-  return <h3>This is an index page!</h3>
+  return (
+    <div>
+      <PageHeader title="Modules" />
+    </div>
+  )
 }
 
 export default Index
