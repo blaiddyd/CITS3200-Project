@@ -1,11 +1,12 @@
 'use strict'
 
 const { Storage } = require('@google-cloud/storage')
+const config = require('../../config')
 
 const storage = new Storage({
-  projectId: 'cits3200-project'
+  projectId: config.storage.projectId
 })
-const bucket = storage.bucket('cits3200-team24-images')
+const bucket = storage.bucket(config.storage.bucket)
 
 /**
  * @function GCSUpload
@@ -20,7 +21,7 @@ function GCSUpload(req, res, next) {
 
   const gcsname = Date.now() + '-' + req.file.originalname
   const file = bucket.file(gcsname)
-  const url = `https://storage.googleapis.com/cits3200-team24-images/${gcsname}`
+  const url = `${config.storage.url}${gcsname}`
 
   const stream = file.createWriteStream({
     metadata: {
