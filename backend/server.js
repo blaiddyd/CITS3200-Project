@@ -7,24 +7,14 @@ const cors = require('cors')
 
 const config = require('../config')
 const { port, dev } = config
+const connectToDatabase = require('../helpers/connectToDatabase')
 
 const nextApp = next({ dev })
 const nextHandler = nextApp.getRequestHandler()
 const app = express()
 
-// Mongoose connection and imports
-const mongoose = require('mongoose')
-mongoose.connect(config.database.connectionString, { useNewUrlParser: true })
-
-const db = mongoose.connection
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-db.once('open', function() {
-  console.log('MongoDB server connected.')
-})
-
-// Unused models are required in index to load into memory
-const Image = require('./models/imageModel')
-const Project = require('./models/projectModel')
+// init mongoose
+connectToDatabase()
 
 // Routers are imported after the model to avoid issues with mongoose
 const apiRouter = require('./routers')
@@ -32,6 +22,7 @@ const apiRouter = require('./routers')
 app.use(express.json())
 app.use(helmet())
 app.use(cors({ origin: true }))
+
 app.use('/api', apiRouter)
 app.get('*', (req, res) => nextHandler(req, res))
 
