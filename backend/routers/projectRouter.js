@@ -7,14 +7,13 @@ const Project = require('mongoose').model(projectModel.modelName)
 
 router.use(require('express').json())
 
-router.get('/', (req, res) => {
-  Project.find()
-    .then(projects => {
-      res.status(200).json(projects)
-    })
-    .catch(err => {
-      res.status(400).json({ err })
-    })
+router.get('/', async (req, res) => {
+  try {
+    const projects = await Project.find()
+    res.status(200).json(projects)
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 })
 
 /* DELETE ALL PROJECTS ROUTE
@@ -34,72 +33,69 @@ router.delete("/", (req, res) => {
 });
 */
 
-router.post('/', (req, res) => {
-  const newTitle = req.body.title
-    ? req.body.title
-    : res.status(400).json({ msg: 'Missing project title.' })
+router.post('/', async (req, res) => {
+  try {
+    const { title } = req.body
 
-  const newProject = new Project({ title: newTitle })
+    if (!title) return res.status(400).json({ msg: 'Missing project title.' })
+    const project = await new Project({ title }).save()
 
-  newProject
-    .save()
-    .then(project => {
-      console.log(`Project ${project._id} created.`)
-      res.status(200).json(project)
-    })
-    .catch(err => {
-      console.log(err)
-      res.status(400).json({ err })
-    })
+    console.log(`Project ${project._id} created.`)
+    res.status(200).json(project)
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ error })
+  }
 })
 
-router.get('/:id', (req, res) => {
-  Project.findOne({ _id: req.params.id })
-    .then(project => {
-      res.status(200).json({ project })
-    })
-    .catch(err => {
-      res.status(400).json({ err })
-    })
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const project = await Project.findOne({ _id: id })
+    res.status(200).json({ project })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 })
 
-router.put('/:id', (req, res) => {
-  Project.findOne({ _id: req.params.id }).then(project => {
+router.patch('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { title, imageIDs } = req.body
+
+    const project = await Project.findOne({ _id: id })
     if (!project) {
-      res.status(400).json({ msg: 'No project exists with the given id.' })
-      return
+      return res
+        .status(400)
+        .json({ msg: 'No project exists with the given id.' })
     }
 
-    project.title = req.body.title ? req.body.title : project.title
-    project.imageIDs = req.body.imageIDs ? req.body.imageIDs : project.imageIDs
-    project
-      .save()
-      .then(project => {
-        console.log(`Project ${req.params.id} updated.`)
-        res.status(200).json(project)
-      })
-      .catch(err => {
-        res.status(400).json({ err })
-      })
-  })
+    if (title) project.title = title
+    if (imageIDs) project.imageIDs = imageIDs
+
+    const newProject = project.save()
+    console.log(`Project ${id} updated.`)
+    res.status(200).json(newProject)
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 })
 
-router.delete('/:id', (req, res) => {
-  Project.findOne({ _id: req.params.id }).then(project => {
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const project = Project.findOne({ _id: id })
     if (!project) {
-      res.status(400).json({ msg: 'No project exists with the given id.' })
-      return
+      return res
+        .status(400)
+        .json({ msg: 'No project exists with the given id.' })
     }
-    project
-      .remove()
-      .then(() => {
-        console.log(`Project ${req.params.id} deleted.`)
-        res.status(200).json({ mgs: `Project ${req.params.id} deleted.` })
-      })
-      .catch(err => {
-        res.status(400).json({ err })
-      })
-  })
+    await project.remove()
+    console.log(`Project ${id} deleted.`)
+    res.status(200).json({ mgs: `Project ${id} deleted.` })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
 })
 
 module.exports = router
