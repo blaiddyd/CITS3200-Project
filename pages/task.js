@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import ProgessBar from '../components/ProgressBar'
+import Download from '../components/Download'
 
 const Task = () => {
   return (
@@ -9,7 +9,7 @@ const Task = () => {
         <title>Task Details</title>
         <link href="../static/css/task-page.css" />
       </Head>
-      <ProgessBar />
+      <Download />
     </div>
   )
 }
