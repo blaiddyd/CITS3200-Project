@@ -4,6 +4,7 @@ const config = require('../../config')
 const router = require('express').Router()
 const multer = require('../middleware/multer')
 const GCSUpload = require('../middleware/gcsUpload')
+const path = require('path')
 
 const { Storage } = require('@google-cloud/storage')
 const storage = new Storage()
@@ -46,8 +47,10 @@ router.get('/download/:filename', async (req, res) => {
     }
 
     const genUUID = uuid()
-    const directory = `./temp/${genUUID}`
-    const zipName = `./temp/zips/${genUUID}.zip`
+    // absolute path to root/temp/uuid
+    const directory = path.join(__dirname, '../../', `temp/${genUUID}`)
+    // absolute path to root/temp/zips/uuid.zip
+    const zipName = path.join(__dirname, '../../', `temp/zips/${genUUID}.zip`)
 
     await ensureDirectory(directory)
     await downloadFromGCP(imageFilenames, config.storage.bucket, directory)
