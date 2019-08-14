@@ -10,13 +10,23 @@ https://drive.google.com/open?id=1aidOGQkd3Emjq8uyCGkaWVrUJE9sgmVK
 
 To view the project:
 
-1. run the npm script
+1. Create a file called `.env` at the root folder with the following fields. Replace parts after `=` with actual values described
+
+```
+DATABASE_USERNAME=Database Username
+DATABASE_PASSWORD=Database Password
+DATABASE_HOST=Database Host
+STORAGE_PROJECT_ID=GCP Cloud Storage Project ID
+STORAGE_BUCKET=GCP Cloud Storage Bucket
+```
+
+2. run the npm script
 
 ```
 npm run dev
 ```
 
-2. Visit `localhost:5000` in your browser
+3. Visit `localhost:5000` in your browser
 
 ### Linting
 
