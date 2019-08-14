@@ -27,7 +27,7 @@ const Image = require('./models/imageModel')
 const Project = require('./models/projectModel')
 
 // Routers are imported after the model to avoid issues with mongoose
-const apiRouter = require('./routers/apiRouter')
+const apiRouter = require('./routers')
 
 app.use(express.json())
 app.use(helmet())
