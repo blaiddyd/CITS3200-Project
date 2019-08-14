@@ -3,6 +3,11 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const ImageStatus = {
+  pending: 'Pending',
+  parsed: 'Parsed'
+}
+
 const ImageSchema = new Schema(
   {
     title: {
@@ -24,9 +29,9 @@ const ImageSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Parsed'],
+      enum: Object.values(ImageStatus),
       required: true,
-      default: 'Pending'
+      default: ImageStatus.pending
     }
   },
   {
@@ -37,3 +42,4 @@ const ImageSchema = new Schema(
 const Image = mongoose.model('image', ImageSchema)
 
 module.exports = Image
+exports.ImageStatus = ImageStatus

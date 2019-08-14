@@ -1,5 +1,6 @@
 'use strict'
 
+const config = require('../../config')
 const router = require('express').Router()
 const multer = require('../middleware/multer')
 const GCSUpload = require('../middleware/gcsUpload')
@@ -13,7 +14,8 @@ const storage = new Storage()
 
 const uuid = require('uuid/v4')
 
-const Image = require('mongoose').model('image')
+const imageModel = require('../models/imageModel')
+const Image = require('mongoose').model(imageModel.modelName)
 
 /**
  * @function ensureDirectory
@@ -119,7 +121,7 @@ router.get('/download/:filename', async (req, res) => {
     await ensureDirectory(destImages)
     await downloadFromGCP(
       req.body.imageFilenames,
-      'cits3200-team24-images',
+      config.storage.bucket,
       destImages
     )
     await dirToZip(destImages, destZip)
@@ -156,7 +158,7 @@ router.delete('/:id', (req, res) => {
       return
     }
     storage
-      .bucket('cits3200-team24-images')
+      .bucket(config.storage.bucket)
       .file(img.filename)
       .delete()
       .catch(err => {
