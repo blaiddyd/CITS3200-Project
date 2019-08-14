@@ -2,7 +2,8 @@
 
 const router = require('express').Router()
 
-const Project = require('mongoose').model('project')
+const projectModel = require('../models/projectModel')
+const Project = require('mongoose').model(projectModel.modelName)
 
 router.use(require('express').json())
 
