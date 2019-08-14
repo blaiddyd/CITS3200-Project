@@ -7,7 +7,7 @@ const config = {
     url: `https://storage.googleapis.com/${env.STORAGE_BUCKET}/`
   },
   database: {
-    connectionString: env.DATABASE_CONNECTION_STRING
+    connectionString: `mongodb+srv://${env.DATABASE_USERNAME}:${env.DATABASE_PASSWORD}@${env.DATABASE_HOST}?retryWrites=true&w=majority`
   },
   port: env.port || 5000,
   dev: env.NODE_ENV !== 'production'
