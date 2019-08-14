@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const config = require('../config')
 
 // models
-require('./models/projectModel')
-require('./models/imageModel')
+require('../backend/models/imageModel')
+require('../backend/models/projectModel')
 
 const connectToDatabase = () => {
   // Mongoose connection and imports
