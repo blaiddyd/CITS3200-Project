@@ -4,5 +4,9 @@
     "react": {
       "version": "detect"
     }
+  },
+  "env": {
+    "mocha": true,
+    "jest": true
   }
 }
