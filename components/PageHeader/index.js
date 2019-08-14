@@ -1,14 +1,17 @@
 import React from 'react'
 
+/**
+ * Component to the header of a page
+ */
 const PageHeader = props => {
-  const { title = '', subtitle, extra, ...rest } = props
+  const { title = '', subtitle, extra } = props
   return (
-    <div className="py-3 border-bottom" {...rest}>
+    <div className="py-3 border-bottom">
       <div className="container">
         <div className="row">
           <div className="col-6">
             {subtitle && <small>{subtitle}</small>}
-            <h3>{title}</h3>
+            <h4 className="mb-0">{title}</h4>
           </div>
           {extra && <div className="col-6">{extra}</div>}
         </div>
