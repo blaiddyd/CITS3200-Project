@@ -21,7 +21,7 @@ const Image = require('mongoose').model(imageModel.modelName)
 router.post('/', multer.single('image'), GCSUpload, async (req, res) => {
   const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
   try {
-    const newImage = await Image({ title, filename, url }).save()
+    const newImage = await new Image({ title, filename, url }).save()
     console.log(`Image ${newImage._id} saved to database`)
     res.status(200).json(newImage)
   } catch (error) {
