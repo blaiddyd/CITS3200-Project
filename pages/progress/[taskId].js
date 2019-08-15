@@ -1,10 +1,13 @@
 import React from 'react'
-import PageHeader from '../components/PageHeader'
-import TitleGroup from '../components/TitleGroup'
-import ResultCollapse from '../components/ResultCollapse'
+import { useRouter } from 'next/router'
+import PageHeader from '../../components/PageHeader'
+import TitleGroup from '../../components/TitleGroup'
+import ResultCollapse from '../../components/ResultCollapse'
 
 const Progress = () => {
-  const title = 'Task #182'
+  const router = useRouter()
+  const { taskId } = router.query
+  const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
   return (
     <div>
