@@ -9,20 +9,32 @@ const Progress = () => {
   const router = useRouter()
   const { taskId } = router.query
 
-  const [{ data, loading }] = useAxios(`/api/progress/${taskId}`)
+  const [{ data, loading, error }] = useAxios(`/api/progress/${taskId}`)
 
   const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
 
-  console.log(data)
-  return loading ? (
-    <i className="fas fa-circle-notch fa-spin" />
-  ) : (
+  if (loading)
+    return (
+      <div className="text-center py-3">
+        <i className="fas fa-circle-notch fa-spin" />
+      </div>
+    )
+  if (error)
+    return (
+      <div className="container py-3">
+        <div className="alert alert-danger" role="alert">
+          No task with id {taskId} found!
+        </div>
+      </div>
+    )
+
+  return (
     <div>
       <PageHeader title={title} subtitle={subtitle} extra={<Stats />} />
       <div className="container">
         <div className="py-3 border-bottom">
-          <Results />
+          <Results data={data} />
         </div>
       </div>
     </div>
@@ -48,10 +60,8 @@ const Stats = () => {
   )
 }
 
-const Results = () => {
-  const pending = ['image 1.png']
-  const animal = ['image 2.png', 'image 4.png']
-  const blank = ['image 3.png', 'image 5.png', 'image 6.png']
+const Results = props => {
+  const { pending, blank, animal } = props.data
 
   return (
     <>
