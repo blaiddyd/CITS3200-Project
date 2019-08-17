@@ -6,9 +6,9 @@
   "scripts": {
     "build": "next build",
     "start": "node index.js",
-    "dev": "npm test && nodemon index.js",
+    "dev": " nodemon index.js",
     "lint": "eslint --fix .",
-    "test": "npm run lint && mocha tests/mocha --exit && jest tests/jest"
+    "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest"
   },
   "repository": {
     "type": "git",
