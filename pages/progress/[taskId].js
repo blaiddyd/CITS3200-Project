@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import useFetch, { useJsonResponse } from 'react-use-fetch'
+import useAxios from 'axios-hooks'
 import PageHeader from '../../components/PageHeader'
 import TitleGroup from '../../components/TitleGroup'
 import ResultCollapse from '../../components/ResultCollapse'
@@ -9,13 +9,15 @@ const Progress = () => {
   const router = useRouter()
   const { taskId } = router.query
 
-  const { response } = useFetch(`/api/progress/${taskId}`)
-  const [data] = useJsonResponse(response)
+  const [{ data, loading }] = useAxios(`/api/progress/${taskId}`)
+
   const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
 
   console.log(data)
-  return (
+  return loading ? (
+    <i className="fas fa-circle-notch fa-spin" />
+  ) : (
     <div>
       <PageHeader title={title} subtitle={subtitle} extra={<Stats />} />
       <div className="container">
