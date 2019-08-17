@@ -13,6 +13,8 @@ const ensureDirectory = require('../../helpers/ensureDirectory')
 const downloadFromGCP = require('../../helpers/downloadFromGCP')
 const dirToZip = require('../../helpers/dirToZip')
 
+const annotateImage = require('../../helpers/annotateImage')
+
 const uuid = require('uuid/v4')
 
 const imageModel = require('../models/imageModel')
@@ -117,6 +119,29 @@ router.delete('/:id', async (req, res) => {
 
     console.log(`Image ${req.params.id} deleted.`)
     res.status(200).json({ mgs: `Image ${req.params.id} deleted.` })
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+})
+
+/* 
+    This route annotates a single image model.
+    inp => A GET request to this route with param = ID
+    out => The updated image model
+*/
+router.get('/annotate/:id', async (req, res) => {
+  try {
+    const image = await Image.findOne({ _id: req.params.id })
+    if (!image) {
+      return res.status(400).json({ msg: 'No image exists with the given id.' })
+    }
+    const matched = await annotateImage(
+      `gs://${config.storage.bucket}/${image.filename}`
+    )
+    image.matched = matched.map(match => match.name)
+    image.status = 'Parsed'
+    await image.save()
+    res.json(image)
   } catch (error) {
     res.status(400).json({ error })
   }
