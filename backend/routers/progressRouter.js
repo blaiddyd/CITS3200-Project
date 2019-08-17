@@ -9,7 +9,8 @@ const Image = require('mongoose').model(imageModel.modelName)
 router.use(require('express').json())
 
 router.get('/:id', async (req, res) => {
-  try {
+  try 
+  {
     const { id } = req.params
     const currentProject = await Project.findOne({ _id: id })
 
@@ -23,10 +24,10 @@ router.get('/:id', async (req, res) => {
     var pendingURLs = []
     var animalURLs = []
     var blankURLs = []
-    var imgIds = []
-    imgIds = currentProject.imageIDs
 
-    for (const val of imgIds) {
+    const imgIds = currentProject.imageIDs
+    for (const val of imgIds) 
+    {
       var img = new ObjectId(val)
       const currentImage = await Image.findOne({ _id: img })
       if (currentImage.status === 'Pending')
@@ -48,9 +49,10 @@ router.get('/:id', async (req, res) => {
     }
 
     var returnProgress = { pending: pendingURLs, animal: animalURLs, blank: blankURLs }
-
     res.status(200).json(returnProgress)
-  } catch (error) {
+  } 
+  catch (error) 
+  {
     res.status(400).json({ error })
   }
 })
