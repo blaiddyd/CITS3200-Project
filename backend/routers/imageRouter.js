@@ -18,6 +18,11 @@ const uuid = require('uuid/v4')
 const imageModel = require('../models/imageModel')
 const Image = require('mongoose').model(imageModel.modelName)
 
+/* 
+    This route uploads a single image to GCS
+    inp => A request, with an image item connected to the body key of "image"
+    out => The saved Image model on MongoDB
+*/
 router.post('/', multer.single('image'), GCSUpload, async (req, res) => {
   const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
   try {
@@ -29,6 +34,11 @@ router.post('/', multer.single('image'), GCSUpload, async (req, res) => {
   }
 })
 
+/* 
+    This route gets all Image models from MongoDB
+    inp => A get request to this route
+    out => All stored image models on MongoDB
+*/
 router.get('/', async (req, res) => {
   try {
     const images = await Image.find()
@@ -38,6 +48,11 @@ router.get('/', async (req, res) => {
   }
 })
 
+/* 
+    This route returns a zip file of downloaded image items from GCS
+    inp => A get request to this route with req.body.imageFilenames and params of the name of the zip
+    out => The zipped file from disk
+*/
 router.get('/download/:filename', async (req, res) => {
   try {
     const { imageFilenames } = req.body
@@ -62,6 +77,11 @@ router.get('/download/:filename', async (req, res) => {
   }
 })
 
+/* 
+    This route gets a single image model.
+    inp => A GET request with parameter = image model
+    out => Returns the equivalent image model from the database
+*/
 router.get('/:id', async (req, res) => {
   try {
     const image = await Image.findOne({ _id: req.params.id })
@@ -74,6 +94,11 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+/* 
+    This route deletes an image from both MongoDB and GCS
+    inp => A GET request with a param of image id
+    out => A success or failure message
+*/
 router.delete('/:id', async (req, res) => {
   try {
     const image = await Image.findOne({ _id: req.params.id })
