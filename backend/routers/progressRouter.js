@@ -13,7 +13,8 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params
     const currentProject = await Project.findOne({ _id: id })
 
-    if (!currentProject) {
+    if (!currentProject) 
+    {
       return res
         .status(400)
         .json({ msg: 'No project exists with the given id.' })
@@ -28,22 +29,25 @@ router.get('/:id', async (req, res) => {
     for (const val of imgIds) {
       var img = new ObjectId(val)
       const currentImage = await Image.findOne({ _id: img })
-      if (currentImage.status === 'Pending') {
+      if (currentImage.status === 'Pending')
+      {
         pendingURLs.push(currentImage.url)
-      } else if (currentImage.status === 'Parsed') {
-        if (currentImage.matched === 'Animal') {
+      } 
+      else if (currentImage.status === 'Parsed') 
+      {
+        var matched = currentImage.matched
+        if (matched.indexOf('Animal') > -1) 
+        {
           animalURLs.push(currentImage.url)
-        } else {
+        } 
+        else 
+        {
           blankURLs.push(currentImage.url)
         }
       }
     }
 
-    var returnProgress = {
-      pending: pendingURLs,
-      animal: animalURLs,
-      blank: blankURLs
-    }
+    var returnProgress = { pending: pendingURLs, animal: animalURLs, blank: blankURLs }
 
     res.status(200).json(returnProgress)
   } catch (error) {
