@@ -1,5 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
+import useFetch, { useJsonResponse } from 'react-use-fetch'
 import PageHeader from '../../components/PageHeader'
 import TitleGroup from '../../components/TitleGroup'
 import ResultCollapse from '../../components/ResultCollapse'
@@ -7,8 +8,13 @@ import ResultCollapse from '../../components/ResultCollapse'
 const Progress = () => {
   const router = useRouter()
   const { taskId } = router.query
+
+  const { response } = useFetch(`/api/progress/${taskId}`)
+  const [data] = useJsonResponse(response)
   const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
+
+  console.log(data)
   return (
     <div>
       <PageHeader title={title} subtitle={subtitle} extra={<Stats />} />

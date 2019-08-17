@@ -34,7 +34,8 @@
     "next": "^9.0.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "react-use-fetch": "0.0.0-alpha.1"
   },
   "devDependencies": {
     "babel-jest": "^24.8.0",
