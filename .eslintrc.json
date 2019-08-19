@@ -11,5 +11,9 @@
   },
   "rules": {
     "react/prop-types": [0]
+  },
+  "env": {
+    "mocha": true,
+    "jest": true
   }
 }

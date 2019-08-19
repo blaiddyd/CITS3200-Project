@@ -14,7 +14,6 @@ const downloadFromGCP = require('../../helpers/downloadFromGCP')
 const dirToZip = require('../../helpers/dirToZip')
 
 const annotateImage = require('../../helpers/annotateImage')
-
 const uuid = require('uuid/v4')
 
 const Image = require('mongoose').model('image')

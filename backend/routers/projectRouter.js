@@ -1,6 +1,8 @@
 'use strict'
 
 const router = require('express').Router()
+router.use(require('express').json())
+
 const config = require('../../config')
 const multer = require('../middleware/multer')
 const GCSUpload = require('../middleware/gcsUpload')
@@ -113,14 +115,13 @@ router.patch('/:id', async (req, res) => {
     if (imageIDs) project.imageIDs = imageIDs
     if (apiKey) project.apiKey = apiKey
 
-    project.save()
+    const newProject = project.save()
     console.log(`Project ${id} updated.`)
-    res.status(200).json(project)
+    res.status(200).json(newProject)
   } catch (error) {
     res.status(400).json({ error })
   }
 })
-
 /* 
     This route deletes a project from MongoDB
     inp => A DELETE request to this route with id as param
