@@ -36,8 +36,8 @@ const Progress = () => {
         subtitle={subtitle}
         extra={<Stats data={data} />}
       />
-      <div className="container">
-        <div className="py-3 border-bottom">
+      <div className="border-bottom">
+        <div className="container py-3">
           <Results data={data} />
         </div>
       </div>
