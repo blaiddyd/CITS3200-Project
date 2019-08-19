@@ -39,10 +39,10 @@ router.get('/', async (req, res) => {
 */
 router.post('/', async (req, res) => {
   try {
-    const { title } = req.body
+    const { title, apiKey } = req.body
 
     if (!title) return res.status(400).json({ msg: 'Missing project title.' })
-    const project = await new Project({ title }).save()
+    const project = await new Project({ title, apiKey }).save()
 
     console.log(`Project ${project._id} created.`)
     res.status(200).json(project)
@@ -75,7 +75,10 @@ router.get('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const { title, imageIDs } = req.body
+    const { title, imageIDs, apiKey } = req.body
+
+    console.log(imageIDs)
+
     const project = await Project.findOne({ _id: id })
     if (!project) {
       return res
@@ -85,6 +88,7 @@ router.patch('/:id', async (req, res) => {
 
     if (title) project.title = title
     if (imageIDs) project.imageIDs = imageIDs
+    if (apiKey) project.apiKey = apiKey
 
     const newProject = project.save()
     console.log(`Project ${id} updated.`)
