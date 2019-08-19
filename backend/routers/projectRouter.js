@@ -2,6 +2,8 @@
 
 const router = require('express').Router()
 const config = require('../../config')
+const multer = require('../middleware/multer')
+const GCSUpload = require('../middleware/gcsUpload')
 const uuid = require('uuid/v4')
 const path = require('path')
 
@@ -46,6 +48,29 @@ router.post('/', async (req, res) => {
     res.status(200).json(project)
   } catch (error) {
     console.log(error)
+    res.status(400).json({ error })
+  }
+})
+
+/* 
+    This route uploads a single image to GCS and adds it to a project ID
+    inp => A request, with an image item connected to the body key of "image"
+    out => The saved Image model on MongoDB
+*/
+router.post('/:id', multer.single('image'), GCSUpload, async (req, res) => {
+  const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
+  try {
+    const currentProj = await Project.findOne({ _id: req.params.id })
+    if (!currentProj) {
+      res.status(400).json({ msg: 'Invalid project ID.' })
+      return
+    }
+    const newImage = await new Image({ title, filename, url }).save()
+    currentProj.imageIDs.push(newImage._id)
+    await currentProj.save()
+    console.log(`Image ${newImage._id} saved to project ${req.params.id}`)
+    res.status(200).json(newImage)
+  } catch (error) {
     res.status(400).json({ error })
   }
 })
