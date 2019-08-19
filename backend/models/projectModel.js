@@ -13,6 +13,10 @@ const ProjectSchema = new Schema(
       type: Array,
       required: true,
       default: []
+    },
+    apiKey: {
+      type: JSON,
+      required: false
     }
   },
   {
