@@ -1,9 +1,9 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import useAxios from 'axios-hooks'
-import PageHeader from '../../components/PageHeader'
-import TitleGroup from '../../components/TitleGroup'
-import ResultCollapse from '../../components/ResultCollapse'
+import PageHeader from '../../../components/PageHeader'
+import TitleGroup from '../../../components/TitleGroup'
+import ResultCollapse from '../../../components/ResultCollapse'
 
 const Progress = () => {
   const router = useRouter()
