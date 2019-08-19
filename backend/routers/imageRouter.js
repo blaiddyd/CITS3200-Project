@@ -17,8 +17,7 @@ const annotateImage = require('../../helpers/annotateImage')
 
 const uuid = require('uuid/v4')
 
-const imageModel = require('../models/imageModel')
-const Image = require('mongoose').model(imageModel.modelName)
+const Image = require('mongoose').model('image')
 
 /* 
     This route uploads a single image to GCS
