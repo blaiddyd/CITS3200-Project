@@ -2,3 +2,6 @@
 .dist
 node_modules
 .next
+/backend/auth.json
+/temp/*
+.env*
