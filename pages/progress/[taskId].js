@@ -31,7 +31,11 @@ const Progress = () => {
 
   return (
     <div>
-      <PageHeader title={title} subtitle={subtitle} extra={<Stats />} />
+      <PageHeader
+        title={title}
+        subtitle={subtitle}
+        extra={<Stats data={data} />}
+      />
       <div className="container">
         <div className="py-3 border-bottom">
           <Results data={data} />
@@ -41,20 +45,26 @@ const Progress = () => {
   )
 }
 
-const Stats = () => {
+const Stats = props => {
+  const { data } = props
+  const { pending, animal, blank } = data
+
+  const total = pending.length + animal.length + blank.length
+  const percentage = Math.trunc((1 - pending.length / total) * 100)
+  const progress = `${percentage}%`
   return (
     <div className="row">
       <div className="col-6">
-        <TitleGroup title="80%" subtitle="Progress" />
+        <TitleGroup title={progress} subtitle="Progress" />
       </div>
       <div className="col-2">
-        <TitleGroup title="3" subtitle="Pending" />
+        <TitleGroup title={pending.length} subtitle="Pending" />
       </div>
       <div className="col-2">
-        <TitleGroup title="1" subtitle="Animal" />
+        <TitleGroup title={animal.length} subtitle="Animal" />
       </div>
       <div className="col-2">
-        <TitleGroup title="2" subtitle="Blank" />
+        <TitleGroup title={blank.length} subtitle="Blank" />
       </div>
     </div>
   )

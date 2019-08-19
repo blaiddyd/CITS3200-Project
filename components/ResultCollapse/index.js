@@ -17,13 +17,23 @@ const ResultCollapse = props => {
       {showData && (
         <ul className="list-group">
           {data.map(item => (
-            <li className="list-group-item" key={item}>
-              {item}
-            </li>
+            <ResultItem key={item} data={item} />
           ))}
         </ul>
       )}
     </div>
+  )
+}
+
+const ResultItem = props => {
+  const { data } = props
+  const name = data.substring(data.lastIndexOf('/') + 1)
+  return (
+    <li className="list-group-item">
+      <a href={data} rel="noopener noreferrer" target="_blank">
+        {name}
+      </a>
+    </li>
   )
 }
 
