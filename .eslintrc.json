@@ -5,6 +5,10 @@
       "version": "detect"
     }
   },
+  "env": {
+    "mocha": true,
+    "jest": true
+  },
   "rules": {
     "react/prop-types": [0]
   },
