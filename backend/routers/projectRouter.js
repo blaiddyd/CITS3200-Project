@@ -1,6 +1,8 @@
 'use strict'
 
 const router = require('express').Router()
+router.use(require('express').json())
+
 const config = require('../../config')
 const uuid = require('uuid/v4')
 const path = require('path')
@@ -74,9 +76,6 @@ router.patch('/:id', async (req, res) => {
   try {
     const { id } = req.params
     const { title, imageIDs } = req.body
-
-    console.log(imageIDs)
-
     const project = await Project.findOne({ _id: id })
     if (!project) {
       return res
@@ -87,14 +86,13 @@ router.patch('/:id', async (req, res) => {
     if (title) project.title = title
     if (imageIDs) project.imageIDs = imageIDs
 
-    project.save()
+    const newProject = project.save()
     console.log(`Project ${id} updated.`)
-    res.status(200).json(project)
+    res.status(200).json(newProject)
   } catch (error) {
     res.status(400).json({ error })
   }
 })
-
 /* 
     This route deletes a project from MongoDB
     inp => A DELETE request to this route with id as param
