@@ -4,9 +4,11 @@ import UploadForm from '../components/UploadForm'
 
 const Submit = () => {
   return (
-    <div>
+    <div className="py-3">
       <PageHeader title="Ecological Image Classification" />
-      <UploadForm />
+      <div className="container">
+        <UploadForm />
+      </div>
     </div>
   )
 }

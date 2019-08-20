@@ -12,21 +12,21 @@ class UploadBox extends React.Component {
   render() {
     return (      
       <div>
+        {
+          this.props.keyUpload ?
+          <h6>
+            <strong>1. </strong>Upload your key
+          </h6> :
+          this.props.imgUpload ?
+          <h6>
+            <strong>2. </strong> Upload your images
+          </h6> :
+          null
+        }
         <div className="card">
-          {
-            this.props.keyUpload ?
-            <h6>
-              Upload your key
-            </h6> :
-            this.props.imgUpload ?
-            <h6>
-              Upload your images
-            </h6> :
-            null
-          }
           <div className="card-body">
-            <div className="row">
-              <i className="fas fa-upload"></i>
+            <div className="d-flex justify-content-center align-items-center">
+              <i className="fas fa-upload mr-3"></i>
               Upload your {
                 this.props.keyUpload ?
                 'file' :
