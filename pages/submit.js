@@ -1,6 +1,7 @@
 import React from 'react'
 import PageHeader from '../components/PageHeader'
 import UploadForm from '../components/UploadForm'
+import '../static/css/submit.css'
 
 const Submit = () => {
   return (
