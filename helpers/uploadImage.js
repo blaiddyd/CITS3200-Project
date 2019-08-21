@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default async (projectId, file) => {
-  const url = `/projects/${projectId}`
+  const url = `/api/projects/${projectId}`
 
   const payload = new FormData()
   payload.append('image', file)

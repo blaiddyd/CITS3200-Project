@@ -6,7 +6,7 @@ export default async apiKey => {
     title: 'Ecological Image Classification',
     apiKey
   }
-  const response = await axios.post('/projects', payload)
+  const response = await axios.post('/api/projects', payload)
 
   const { data } = response
   return data
