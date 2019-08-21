@@ -12,6 +12,7 @@ const storage = new Storage()
 const ensureDirectory = require('../../helpers/ensureDirectory')
 const downloadFromGCP = require('../../helpers/downloadFromGCP')
 const dirToZip = require('../../helpers/dirToZip')
+const fs = require('fs')
 
 const annotateImage = require('../../helpers/annotateImage')
 const uuid = require('uuid/v4')
@@ -71,6 +72,8 @@ router.get('/download/:filename', async (req, res) => {
     await downloadFromGCP(imageFilenames, config.storage.bucket, directory)
     await dirToZip(directory, zipName)
     await res.download(zipName, `${filename}.zip`)
+
+    fs.rmdirSync(directory)
   } catch (error) {
     console.error(error)
     res.status(400).json({ error })

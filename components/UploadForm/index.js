@@ -94,7 +94,7 @@ class UploadForm extends React.Component {
             <UploadBox
               onChange={this.handleImageChange}
               value={images}
-              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.JPEG,.PNG,.GIF,.BMP,.WEBP,.RAW,.ICO,.PDF,.TIFF"
+              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.jpg"
               multiple={true}
             />
           </div>
