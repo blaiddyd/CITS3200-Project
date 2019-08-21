@@ -181,7 +181,7 @@ router.get('/download/:id/:match', async (req, res) => {
     // absolute path to root/temp/uuid
     const directory = path.join(__dirname, '../../', `temp/${genUUID}`)
     // absolute path to root/temp/zips/uuid.zip
-    const zipName = path.join(__dirname, '../../', `temp/zips/${genUUID}.zip`)
+    const zipName = path.join(__dirname, '../../', `temp/${genUUID}.zip`)
     await ensureDirectory(directory)
 
     const imageIDs = proj.imageIDs

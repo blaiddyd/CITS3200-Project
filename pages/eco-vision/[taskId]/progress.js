@@ -90,8 +90,8 @@ const Results = props => {
 
 const Download = props => {
   const { taskId } = props
-  const animalUrl = `/api/download/${taskId}/Animal`
-  const blankUrl = `/api/download/${taskId}/Blank`
+  const animalUrl = `/api/projects/download/${taskId}/Animal`
+  const blankUrl = `/api/projects/download/${taskId}/Blank`
   return (
     <>
       <h5 className="mb-2">Results</h5>
