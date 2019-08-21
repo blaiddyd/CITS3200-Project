@@ -6,70 +6,63 @@ class UploadForm extends React.Component {
     super()
     this.state = {
       images: [],
-      apiKey: '',
-      imageNames: [],
-      apiFileName: ''
+      apiKey: undefined
     }
-    this.addImage = this.addImage.bind(this)
-    this.addApiKey = this.addApiKey.bind(this)
   }
 
-  addImage(event) {
+  handleImageChange = event => {
     event.persist()
-    let newImages = this.state.images
-    newImages.push(event.target.value)
-    let imgNames = this.state.imageNames
-    for (let i = 0; i < event.target.files.length; i++) {
-      if (!this.state.imageNames.includes(event.target.files[i].name)) {
-        imgNames.push(event.target.files[i].name)
-      }
-    }
-    this.setState({
-      images: newImages,
-      imageNames: imgNames
-    }) 
+    const { files } = event.target
+    const images = Array.from(files)
+    this.setState({ images })
   }
 
-  addApiKey(event) {
+  handleApiKeyChange = event => {
     event.persist()
-    
-    this.setState({
-      apiKey: event.target.value,
-      apiFileName: event.target.files[0].name
-    })
+    const { files } = event.target
+    const apiKey = files.length && files[0]
+    this.setState({ apiKey })
+  }
+
+  /** TODO: implement backend linking */
+  handleSubmit = () => {
+    // create a project
+    // upload each image and link to project
+    // route to confirmation page
   }
 
   render() {
+    const { apiKey, images } = this.state
+    const canSubmit = images.length && apiKey
     return (
       <div className="container-fluid mt-3">
         <div className="row">
           <div className="col-6">
-            <UploadBox 
-              keyUpload={true} 
-              imgUpload={false} 
-              handleInput={this.addApiKey} 
-              fileNames={this.state.apiFileName}
+            <h5 className="mb-3">1. Upload your key</h5>
+            <UploadBox
+              onChange={this.handleApiKeyChange}
+              value={apiKey && [apiKey]}
+              accept=".json"
             />
           </div>
           <div className="col-6">
-            <UploadBox 
-              keyUpload={false} 
-              imgUpload={true} 
-              handleInput={this.addImage} 
-              fileNames={this.state.imageNames} 
+            <h5 className="mb-3">2. Upload your images</h5>
+            <UploadBox
+              onChange={this.handleImageChange}
+              value={images}
+              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff"
+              multiple={true}
             />
           </div>
         </div>
         <div className="d-flex flex-row-reverse mt-3">
-          <button 
-            type="button" 
-            className="btn btn-dark btn-sm" 
-            disabled={this.state.images.length == 0 ? true : false}
-          >
+          <button
+            type="button"
+            className="btn btn-dark btn-sm rounded-0"
+            disabled={!canSubmit}
+            onClick={this.handleSubmit}>
             <div className="d-flex justify-content-center align-items-center">
-              <span>
-                Process {this.state.images.length > 0 ? this.state.images.length : null} Images
-              </span>
+              <span>Process {images.length || ''} images</span>
               <i className="fas fa-arrow-right ml-2"></i>
             </div>
           </button>
