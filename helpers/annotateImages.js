@@ -6,6 +6,7 @@ const vision = require('@google-cloud/vision')
 const path = require('path')
 const uuid = require('uuid/v4')
 const fs = require('fs')
+const ensureDir = require('./ensureDirectory')
 
 /**
  * @function annotateImages
@@ -15,8 +16,10 @@ const fs = require('fs')
  * @returns void
  */
 async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
+  const directory = path.join(__dirname, '/temp/')
   const filename = `${uuid()}.json`
-  const keyFilename = path.join(__dirname, '/temp/', filename)
+  await ensureDir(directory)
+  const keyFilename = path.join(directory, filename)
   fs.writeFileSync(keyFilename, apiKey)
   console.log('wrote', apiKey, 'to', keyFilename)
 
