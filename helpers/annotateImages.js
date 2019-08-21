@@ -21,7 +21,6 @@ async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
   await ensureDir(directory)
   const keyFilename = path.join(directory, filename)
   fs.writeFileSync(keyFilename, apiKey)
-  console.log('wrote', apiKey, 'to', keyFilename)
 
   try {
     const client = new vision.ImageAnnotatorClient({ keyFilename })
@@ -34,8 +33,8 @@ async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
         return
       }
 
-      const url = `gs://${config.storage.bucket}/${img.filename}`
-      const matched = await annotateImage(client, url, minScore)
+      const uri = `gs://${config.storage.bucket}/${img.filename}`
+      const matched = await annotateImage(client, uri, img.filename, minScore)
 
       img.matched = matched.map(match => match.name)
       img.status = 'Parsed'
