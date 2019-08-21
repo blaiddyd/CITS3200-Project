@@ -15,7 +15,8 @@ const fs = require('fs')
  * @returns void
  */
 async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
-  const keyFilename = path.join(__dirname, '/temp/', uuid(), '.json')
+  const filename = `${uuid()}.json`
+  const keyFilename = path.join(__dirname, '/temp/', filename)
   fs.writeFileSync(keyFilename, apiKey)
   console.log('wrote', apiKey, 'to', keyFilename)
 
