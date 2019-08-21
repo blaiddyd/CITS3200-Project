@@ -97,16 +97,12 @@ const Download = props => {
       <h5 className="mb-2">Results</h5>
       <div className="row">
         <div className="col-6">
-          <a
-            href={animalUrl}
-            download
-            rel="noopener noreferrer"
-            target="_blank">
+          <a href={animalUrl} rel="noopener noreferrer" target="_blank">
             <BlockButton title="Animal" subtitle="animal.zip" icon="download" />
           </a>
         </div>
         <div className="col-6">
-          <a href={blankUrl} download rel="noopener noreferrer" target="_blank">
+          <a href={blankUrl} rel="noopener noreferrer" target="_blank">
             <BlockButton title="Blank" subtitle="blank.zip" icon="download" />
           </a>
         </div>
