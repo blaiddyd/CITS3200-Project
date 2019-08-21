@@ -30,6 +30,7 @@ class UploadBox extends React.Component {
           null
         }
         <div className="card">
+          {this.state.fileNames}
           <div className="card-body">
             <div className="d-flex justify-content-center align-items-center">
               <input 
@@ -65,7 +66,10 @@ class UploadBox extends React.Component {
                 </div>
               </label>
             </div>
-            <Filenames names={this.state.fileNames} />
+            <Filenames 
+              names={this.state.fileNames} 
+              input={this.props.keyUpload ? 'key' : this.props.imgUpload ? 'img' : null }
+            />
           </div>
         </div>
       </div>

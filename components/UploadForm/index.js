@@ -8,7 +8,7 @@ class UploadForm extends React.Component {
       images: [],
       apiKey: '',
       imageNames: [],
-      apiFileName: []
+      apiFileName: ''
     }
     this.addImage = this.addImage.bind(this)
     this.addApiKey = this.addApiKey.bind(this)
@@ -32,9 +32,10 @@ class UploadForm extends React.Component {
 
   addApiKey(event) {
     event.persist()
+    
     this.setState({
       apiKey: event.target.value,
-      apiFileName: [event.target.files[0].name]
+      apiFileName: event.target.files[0].name
     })
   }
 
