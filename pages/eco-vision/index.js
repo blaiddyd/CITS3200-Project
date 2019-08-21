@@ -5,12 +5,12 @@ import '../../static/css/submit.css'
 
 const Submit = () => {
   return (
-    <div className="py-3">
-      <PageHeader title="Ecological Image Classification" />
-      <div className="container">
+    <>
+      <PageHeader title="Ecological Image Classification" subtitle="Module" />
+      <div className="container py-3">
         <UploadForm />
       </div>
-    </div>
+    </>
   )
 }
 
