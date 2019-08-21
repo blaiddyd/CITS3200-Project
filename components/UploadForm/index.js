@@ -1,7 +1,11 @@
 import React from 'react'
+import Router from 'next/router'
 import UploadBox from './UploadBox'
 import createProject from '../../helpers/createProject'
 import readFile from '../../helpers/readFile'
+import plimit from 'p-limit'
+import config from '../../config'
+import uploadImage from '../../helpers/uploadImage'
 
 class UploadForm extends React.Component {
   constructor() {
@@ -36,18 +40,26 @@ class UploadForm extends React.Component {
   handleSubmit = async () => {
     await this.toggleLoading()
     try {
-      const { apiKey } = this.state
+      const { apiKey, images } = this.state
       const apiKeyData = await readFile(apiKey)
 
       // create a project
       const project = await createProject(apiKeyData)
-      console.log(project)
+      const projectId = project._id
 
       // upload each image and link to project
-      // use helpers/uploadImage
+      // only upload x amount of images at a time
+      const limit = plimit(config.uploadLimit)
+      const tasks = images.map(image =>
+        limit(() => uploadImage(projectId, image))
+      )
+
+      // wait for all images to be uploaded
+      await Promise.all(tasks)
 
       // route to confirmation page
       await this.toggleLoading()
+      Router.push(`/eco-vision/${projectId}/confirmation`)
     } catch (error) {
       console.error(error)
       alert('Oh no something went wrong')
