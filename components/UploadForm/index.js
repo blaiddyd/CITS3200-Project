@@ -12,6 +12,7 @@ class UploadForm extends React.Component {
     super()
     this.state = {
       images: [],
+      progress: 0,
       apiKey: undefined,
       loading: false
     }
@@ -51,7 +52,10 @@ class UploadForm extends React.Component {
       // only upload x amount of images at a time
       const limit = plimit(config.uploadLimit)
       const tasks = images.map(image =>
-        limit(() => uploadImage(projectId, image))
+        limit(async () => {
+          await uploadImage(projectId, image)
+          this.setState(old => ({ progress: old.progress + 1 }))
+        })
       )
 
       // wait for all images to be uploaded
@@ -68,7 +72,7 @@ class UploadForm extends React.Component {
   }
 
   render() {
-    const { apiKey, images, loading } = this.state
+    const { apiKey, images, loading, progress } = this.state
     const canSubmit = images.length && apiKey
     return (
       <>
@@ -107,6 +111,11 @@ class UploadForm extends React.Component {
             </div>
           </button>
         </div>
+        {loading && !!progress && (
+          <p className="mb-0 text-right mt-2">
+            {progress} / {images.length} uploaded
+          </p>
+        )}
       </>
     )
   }

@@ -1,4 +1,4 @@
-const { env } = process
+const { env } = process || { env: {} }
 
 const config = {
   storage: {
