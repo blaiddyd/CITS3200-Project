@@ -6,6 +6,7 @@ import readFile from '../../helpers/readFile'
 import plimit from 'p-limit'
 import config from '../../config'
 import uploadImage from '../../helpers/uploadImage'
+import startAnnotation from '../../helpers/startAnnotation'
 
 class UploadForm extends React.Component {
   constructor() {
@@ -61,6 +62,9 @@ class UploadForm extends React.Component {
       // wait for all images to be uploaded
       await Promise.all(tasks)
 
+      // start annotating
+      await startAnnotation(projectId)
+
       // route to confirmation page
       await this.toggleLoading()
       Router.push(`/eco-vision/${projectId}/confirmation`)
@@ -111,7 +115,7 @@ class UploadForm extends React.Component {
             </div>
           </button>
         </div>
-        {loading && !!progress && (
+        {loading && (
           <p className="mb-0 text-right mt-2">
             {progress} / {images.length} uploaded
           </p>
