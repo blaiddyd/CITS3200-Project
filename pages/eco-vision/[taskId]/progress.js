@@ -4,6 +4,7 @@ import useAxios from 'axios-hooks'
 import PageHeader from '../../../components/PageHeader'
 import TitleGroup from '../../../components/TitleGroup'
 import ResultCollapse from '../../../components/ResultCollapse'
+import BlockButton from '../../../components/BlockButton'
 
 const Progress = () => {
   const router = useRouter()
@@ -37,9 +38,12 @@ const Progress = () => {
         extra={<Stats data={data} />}
       />
       <div className="border-bottom">
-        <div className="container py-3">
+        <div className="container pt-3 pb-4">
           <Results data={data} />
         </div>
+      </div>
+      <div className="container py-4">
+        <Download taskId={taskId} data={data} />
       </div>
     </div>
   )
@@ -78,6 +82,33 @@ const Results = props => {
       <ResultCollapse name="Pending" data={pending} className="mb-3" />
       <ResultCollapse name="Animal" data={animal} className="mb-3" />
       <ResultCollapse name="Blank" data={blank} />
+    </>
+  )
+}
+
+const Download = props => {
+  const { taskId } = props
+  const animalUrl = `/api/download/${taskId}/Animal`
+  const blankUrl = `/api/download/${taskId}/Blank`
+  return (
+    <>
+      <h5 className="mb-2">Results</h5>
+      <div className="row">
+        <div className="col-6">
+          <a
+            href={animalUrl}
+            download
+            rel="noopener noreferrer"
+            target="_blank">
+            <BlockButton title="Animal" subtitle="animal.zip" icon="download" />
+          </a>
+        </div>
+        <div className="col-6">
+          <a href={blankUrl} download rel="noopener noreferrer" target="_blank">
+            <BlockButton title="Blank" subtitle="blank.zip" icon="download" />
+          </a>
+        </div>
+      </div>
     </>
   )
 }
