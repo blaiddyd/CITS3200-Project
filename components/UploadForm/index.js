@@ -35,7 +35,7 @@ class UploadForm extends React.Component {
     const { apiKey, images } = this.state
     const canSubmit = images.length && apiKey
     return (
-      <div className="container-fluid mt-3">
+      <div className="py-3">
         <div className="row">
           <div className="col-6">
             <h5 className="mb-3">1. Upload your key</h5>
