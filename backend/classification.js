@@ -1,3 +1,4 @@
+//the start of a pre-processing function
 function isNight() {
 	var maker_note_exif_tag = 37500;
     var infrared_status_byte = 80;
@@ -5,14 +6,18 @@ function isNight() {
 	return true;
 }
 
-//processes one image at a time
-async function objectDetection(link) {
+/*	
+	Processes one image at a time
+	Input: link to image and a full path to a .json key
+	Output: true if image contains an animal object. False otherwise.
+*/
+async function objectDetection(link, keyFileName) {
 	// Imports the Google Cloud client library
 	const vision = require('@google-cloud/vision').v1;
 	const fs = require('fs');
 	
 	// Creates a client
-	const client = new vision.ImageAnnotatorClient();
+	const client = new vision.ImageAnnotatorClient(keyFileName);
 
 	const gcsUri = link;
 
@@ -28,26 +33,24 @@ async function objectDetection(link) {
 		console.log(`Name: ${object.name}`);
 		console.log(`Confidence: ${object.score}`);
 	});
-	var r;
+	var animal;
 	if(animalFound && (score*100 >= 60.0)) {
-		console.log("found an animal");
-		r = true;
+		animal = true;
 	}
 	else {
-		console.log("did not find an animal");
-		r = false;
+		animal = false;
 	}
 	return r;
 }
 
-/** Perform async batch image annotation */
-async function sampleAsyncBatchAnnotateImages(inputImageUri, outputUri) {
+/* 
+	Perform async batch image annotation 
+	output gets written to a JSON file in the specified location.
+*/
+async function multipleImageObjectDetection(inputImageUri, outputUri) {
 	// Imports the Google Cloud client library
 	const vision = require('@google-cloud/vision').v1;
-	
 	const client = new vision.ImageAnnotatorClient();
-	// const inputImageUri = 'gs://cloud-samples-data/vision/label/wakeupcat.jpg';
-	// const outputUri = 'gs://your-bucket/prefix/';
 	
 	const source = {
 		imageUri: inputImageUri,
@@ -71,7 +74,7 @@ async function sampleAsyncBatchAnnotateImages(inputImageUri, outputUri) {
 	};
 
 	// The max number of responses to output in each JSON file
-	const batchSize = 2;
+	const batchSize = 50;
 	const outputConfig = {
 		gcsDestination: gcsDestination,
 		batchSize: batchSize,
@@ -89,26 +92,6 @@ async function sampleAsyncBatchAnnotateImages(inputImageUri, outputUri) {
 
 	// The output is written to GCS with the provided output_uri as prefix
 	const gcsOutputUri = response.outputConfig.gcsDestination.uri;
-	console.log(`Output written to GCS with prefix: ${gcsOutputUri}`);
-	
-	//output has been written to a JSON file in the specified location, now need to read that
+	console.log(`Output written to GCS with prefix: ${gcsOutputUri}`);	
 }
-
-function analyseImage(link) { //for preprocessing
-	//not sure how this is going to work with processing multiple images at once
-	
-	//if(isNight()){ mark image as blank }
-	//any images not eliminated in preprocessing get sent to vision
-	
-	if( objectDetection(link) ) {
-		//mark image as 'Animal
-	}
-	else {
-		//mark image as 'Blank'
-	}
-}
-
-
-var imageLink = 'https://cloud.google.com/vision/docs/images/bicycle_example.png';
-analyseImage(imageLink);
 
