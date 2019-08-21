@@ -86,7 +86,7 @@ class UploadForm extends React.Component {
             <UploadBox
               onChange={this.handleApiKeyChange}
               value={apiKey && [apiKey]}
-              accept=".json"
+              accept=".json,.JSON"
             />
           </div>
           <div className="col-6">
@@ -94,7 +94,7 @@ class UploadForm extends React.Component {
             <UploadBox
               onChange={this.handleImageChange}
               value={images}
-              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff"
+              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.JPEG,.PNG,.GIF,.BMP,.WEBP,.RAW,.ICO,.PDF,.TIFF"
               multiple={true}
             />
           </div>
