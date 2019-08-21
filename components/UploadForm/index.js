@@ -44,6 +44,7 @@ class UploadForm extends React.Component {
       console.log(project)
 
       // upload each image and link to project
+      // use helpers/uploadImage
 
       // route to confirmation page
       await this.toggleLoading()
