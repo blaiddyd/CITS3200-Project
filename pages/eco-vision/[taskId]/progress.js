@@ -9,7 +9,9 @@ const Progress = () => {
   const router = useRouter()
   const { taskId } = router.query
 
-  const [{ data, loading, error }] = useAxios(`/api/progress/${taskId}`)
+  const [{ data, loading, error }] = taskId
+    ? useAxios(`/api/progress/${taskId}`)
+    : [{ error: true }]
 
   const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
