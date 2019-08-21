@@ -5,15 +5,22 @@ const config = require('../config')
 require('../backend/models/imageModel')
 require('../backend/models/projectModel')
 
-const connectToDatabase = () => {
-  // Mongoose connection and imports
-  mongoose.connect(config.database.connectionString, { useNewUrlParser: true })
+const connectToDatabase = () =>
+  new Promise((resolve, reject) => {
+    // Mongoose connection and imports
+    mongoose.connect(config.database.connectionString, {
+      useNewUrlParser: true
+    })
 
-  const db = mongoose.connection
-  db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-  db.once('open', function() {
-    console.log('MongoDB server connected.')
+    const db = mongoose.connection
+    db.on('error', error => {
+      console.error('MongoDB connection error:', error)
+      reject(error)
+    })
+    db.once('open', () => {
+      console.log('MongoDB server connected.')
+      resolve(db)
+    })
   })
-}
 
 module.exports = connectToDatabase
