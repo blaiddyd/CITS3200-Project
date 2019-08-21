@@ -1,12 +1,15 @@
 import React from 'react'
 import UploadBox from './UploadBox'
+import createProject from '../../helpers/createProject'
+import readFile from '../../helpers/readFile'
 
 class UploadForm extends React.Component {
   constructor() {
     super()
     this.state = {
       images: [],
-      apiKey: undefined
+      apiKey: undefined,
+      loading: false
     }
   }
 
@@ -24,15 +27,35 @@ class UploadForm extends React.Component {
     this.setState({ apiKey })
   }
 
+  toggleLoading = () =>
+    new Promise(resolve =>
+      this.setState({ loading: !this.state.loading }, resolve)
+    )
+
   /** TODO: implement backend linking */
-  handleSubmit = () => {
-    // create a project
-    // upload each image and link to project
-    // route to confirmation page
+  handleSubmit = async () => {
+    await this.toggleLoading()
+    try {
+      const { apiKey } = this.state
+      const apiKeyData = await readFile(apiKey)
+
+      // create a project
+      const project = await createProject(apiKeyData)
+      console.log(project)
+
+      // upload each image and link to project
+
+      // route to confirmation page
+      await this.toggleLoading()
+    } catch (error) {
+      console.error(error)
+      alert('Oh no something went wrong')
+      await this.toggleLoading()
+    }
   }
 
   render() {
-    const { apiKey, images } = this.state
+    const { apiKey, images, loading } = this.state
     const canSubmit = images.length && apiKey
     return (
       <>
@@ -59,11 +82,15 @@ class UploadForm extends React.Component {
           <button
             type="button"
             className="btn btn-dark btn-sm rounded-0"
-            disabled={!canSubmit}
+            disabled={!canSubmit || loading}
             onClick={this.handleSubmit}>
             <div className="d-flex justify-content-center align-items-center">
-              <span>Process {images.length || ''} images</span>
-              <i className="fas fa-arrow-right ml-2"></i>
+              <span className="mr-2">Process {images.length || ''} images</span>
+              {loading ? (
+                <i className="fas fa-spin fa-circle-notch" />
+              ) : (
+                <i className="fas fa-arrow-right" />
+              )}
             </div>
           </button>
         </div>
