@@ -8,7 +8,8 @@
     "start": "node index.js",
     "dev": " nodemon index.js",
     "lint": "eslint --fix .",
-    "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest"
+    "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest",
+    "test:e2e": "cypress open"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "babel-jest": "^24.8.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "cypress": "^3.4.1",
     "eslint": "^5.12.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-prettier-standard": "^3.0.1",
