@@ -10,7 +10,9 @@ const Progress = () => {
   const router = useRouter()
   const { taskId } = router.query
 
-  const [{ data, loading, error }] = useAxios(`/api/progress/${taskId}`)
+  const [{ data, loading, error }] = taskId
+    ? useAxios(`/api/progress/${taskId}`)
+    : [{ error: true }]
 
   const title = `Task #${taskId}`
   const subtitle = 'Ecological Image Classification'
@@ -88,23 +90,19 @@ const Results = props => {
 
 const Download = props => {
   const { taskId } = props
-  const animalUrl = `/api/download/${taskId}/Animal`
-  const blankUrl = `/api/download/${taskId}/Blank`
+  const animalUrl = `/api/projects/download/${taskId}/Animal`
+  const blankUrl = `/api/projects/download/${taskId}/Blank`
   return (
     <>
       <h5 className="mb-2">Results</h5>
       <div className="row">
         <div className="col-6">
-          <a
-            href={animalUrl}
-            download
-            rel="noopener noreferrer"
-            target="_blank">
+          <a href={animalUrl} rel="noopener noreferrer" target="_blank">
             <BlockButton title="Animal" subtitle="animal.zip" icon="download" />
           </a>
         </div>
         <div className="col-6">
-          <a href={blankUrl} download rel="noopener noreferrer" target="_blank">
+          <a href={blankUrl} rel="noopener noreferrer" target="_blank">
             <BlockButton title="Blank" subtitle="blank.zip" icon="download" />
           </a>
         </div>

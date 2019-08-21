@@ -7,13 +7,11 @@
   },
   "env": {
     "mocha": true,
-    "jest": true
+    "jest": true,
+    "browser": true
   },
   "rules": {
     "react/prop-types": [0]
   },
-  "env": {
-    "mocha": true,
-    "jest": true
-  }
+  "parser": "babel-eslint"
 }

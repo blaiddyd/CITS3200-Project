@@ -1,4 +1,4 @@
-const { env } = process
+const { env } = process || { env: {} }
 
 const config = {
   storage: {
@@ -10,7 +10,8 @@ const config = {
     connectionString: `mongodb+srv://${env.DATABASE_USERNAME}:${env.DATABASE_PASSWORD}@${env.DATABASE_HOST}?retryWrites=true&w=majority`
   },
   port: env.port || 5000,
-  dev: env.NODE_ENV !== 'production'
+  dev: env.NODE_ENV !== 'production',
+  uploadLimit: 10
 }
 
 module.exports = config

@@ -158,7 +158,7 @@ router.get('/annotate/:id', async (req, res) => {
         .json({ msg: 'No project exists with the given id.' })
     }
     // NOTE: not await to run in background
-    annotateImages(proj.imageIDs)
+    annotateImages(proj.apiKey, proj.imageIDs)
     res.json({ msg: `Annotating project ${req.params.id} in the background.` })
   } catch (error) {
     res.status(400).json({ error })
@@ -181,7 +181,7 @@ router.get('/download/:id/:match', async (req, res) => {
     // absolute path to root/temp/uuid
     const directory = path.join(__dirname, '../../', `temp/${genUUID}`)
     // absolute path to root/temp/zips/uuid.zip
-    const zipName = path.join(__dirname, '../../', `temp/zips/${genUUID}.zip`)
+    const zipName = path.join(__dirname, '../../', `temp/${genUUID}.zip`)
     await ensureDirectory(directory)
 
     const imageIDs = proj.imageIDs

@@ -2,6 +2,11 @@ const annotateImage = require('./annotateImage')
 // const Image = require("mongoose").model("image");
 const Image = require('../backend/models/imageModel')
 const config = require('../config')
+const vision = require('@google-cloud/vision')
+const path = require('path')
+const uuid = require('uuid/v4')
+const fs = require('fs')
+const ensureDir = require('./ensureDirectory')
 
 /**
  * @function annotateImages
@@ -10,25 +15,39 @@ const config = require('../config')
  * @param {number} minScore the minimum score for matches to be found
  * @returns void
  */
-async function annotateImages(imageIDs, minScore = 0.65) {
+async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
+  const directory = path.join(__dirname, '/temp/')
+  const filename = `${uuid()}.json`
+  await ensureDir(directory)
+  const keyFilename = path.join(directory, filename)
+  fs.writeFileSync(keyFilename, apiKey)
+
   try {
-    await imageIDs.map(async ID => {
+    const client = new vision.ImageAnnotatorClient({ keyFilename })
+
+    const tasks = imageIDs.map(async ID => {
       const img = await Image.findOne({ _id: ID })
+
       if (!img) {
         console.log(`Image ${ID} could not be parsed.`)
         return
       }
-      const matched = await annotateImage(
-        `gs://${config.storage.bucket}/${img.filename}`,
-        minScore
-      )
+
+      const uri = `gs://${config.storage.bucket}/${img.filename}`
+      const matched = await annotateImage(client, uri, img.filename, minScore)
+
       img.matched = matched.map(match => match.name)
       img.status = 'Parsed'
+
       await img.save()
     })
+
+    await Promise.all(tasks)
   } catch (e) {
     if (e) throw e
   }
+
+  fs.unlinkSync(keyFilename)
 }
 
 module.exports = annotateImages
