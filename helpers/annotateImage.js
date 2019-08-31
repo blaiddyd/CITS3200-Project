@@ -16,7 +16,11 @@ async function annotateImage(client, uri, filename, minScore = 0.65) {
 
     const isNight = makerNote[infraredFlag]
     if (isNight) return [{ name: 'Animal', score: 1 }]
+  } catch (e) {
+    console.error('failed to read exif metadata', e)
+  }
 
+  try {
     // use api
     const [result] = await client.annotateImage({
       image: { source: { imageUri: uri } },
