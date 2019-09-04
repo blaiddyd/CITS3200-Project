@@ -1,86 +1,33 @@
 import React from 'react'
-import Router from 'next/router'
-import UploadBox from './UploadBox'
-import createProject from '../../helpers/createProject'
-import readFile from '../../helpers/readFile'
-import plimit from 'p-limit'
-import config from '../../config'
-import uploadImage from '../../helpers/uploadImage'
-import startAnnotation from '../../helpers/startAnnotation'
+import UploadBox from '../UploadBox'
 
 class UploadForm extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      images: [],
-      progress: 0,
-      apiKey: undefined,
-      loading: false
-    }
+  state = {
+    files: [],
+    apiKey: undefined
   }
 
-  handleImageChange = event => {
-    event.persist()
-    const { files } = event.target
-    const images = Array.from(files)
-    this.setState({ images })
+  handleFileChange = event => {
+    const { files: filesMap } = event.target
+    const files = Array.from(filesMap)
+    this.setState({ files })
   }
 
   handleApiKeyChange = event => {
-    event.persist()
     const { files } = event.target
     const apiKey = files.length && files[0]
     this.setState({ apiKey })
   }
 
-  toggleLoading = () =>
-    new Promise(resolve =>
-      this.setState({ loading: !this.state.loading }, resolve)
-    )
-
-  setProgress = progress =>
-    new Promise(resolve => this.setState({ progress }, resolve))
-
   handleSubmit = async () => {
-    await this.toggleLoading()
-    await this.setProgress(0)
-    try {
-      const { apiKey, images, progress } = this.state
-      const apiKeyData = await readFile(apiKey)
-
-      // create a project
-      const project = await createProject(apiKeyData)
-      const projectId = project._id
-
-      // upload each image and link to project
-      // only upload x amount of images at a time
-      const limit = plimit(config.uploadLimit)
-      const tasks = images.map(image =>
-        limit(async () => {
-          await uploadImage(projectId, image)
-          await this.setProgress(progress + 1)
-        })
-      )
-
-      // wait for all images to be uploaded
-      await Promise.all(tasks)
-
-      // start annotating
-      await startAnnotation(projectId)
-
-      // route to confirmation page
-      await this.toggleLoading()
-      Router.push(`/eco-vision/${projectId}/confirmation`)
-    } catch (error) {
-      console.error(error)
-      alert('Oh no something went wrong')
-      await this.toggleLoading()
-    }
+    const { apiKey, files } = this.state
+    this.props.onSubmit(apiKey, files)
   }
 
   render() {
-    const { apiKey, images, loading, progress } = this.state
-    const canSubmit = images.length && apiKey
+    const { apiKey, files } = this.state
+    const { loading, progress, accept } = this.props
+    const canSubmit = files.length && apiKey
     return (
       <>
         <div className="row">
@@ -93,11 +40,11 @@ class UploadForm extends React.Component {
             />
           </div>
           <div className="col-6">
-            <h5 className="mb-3">2. Upload your images</h5>
+            <h5 className="mb-3">2. Upload your files</h5>
             <UploadBox
-              onChange={this.handleImageChange}
-              value={images}
-              accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.jpg"
+              onChange={this.handleFileChange}
+              value={files}
+              accept={accept}
               multiple={true}
             />
           </div>
@@ -109,7 +56,7 @@ class UploadForm extends React.Component {
             disabled={!canSubmit || loading}
             onClick={this.handleSubmit}>
             <div className="d-flex justify-content-center align-items-center">
-              <span className="mr-2">Process {images.length || ''} images</span>
+              <span className="mr-2">Process {files.length || ''} files</span>
               {loading ? (
                 <i className="fas fa-spin fa-circle-notch" />
               ) : (
@@ -120,7 +67,7 @@ class UploadForm extends React.Component {
         </div>
         {loading && (
           <p className="mb-0 text-right mt-2">
-            {progress} / {images.length} uploaded
+            {progress} / {files.length} uploaded
           </p>
         )}
       </>
