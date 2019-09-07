@@ -38,11 +38,14 @@ class UploadForm extends React.Component {
       this.setState({ loading: !this.state.loading }, resolve)
     )
 
-  /** TODO: implement backend linking */
+  setProgress = progress =>
+    new Promise(resolve => this.setState({ progress }, resolve))
+
   handleSubmit = async () => {
     await this.toggleLoading()
+    await this.setProgress(0)
     try {
-      const { apiKey, images } = this.state
+      const { apiKey, images, progress } = this.state
       const apiKeyData = await readFile(apiKey)
 
       // create a project
@@ -55,7 +58,7 @@ class UploadForm extends React.Component {
       const tasks = images.map(image =>
         limit(async () => {
           await uploadImage(projectId, image)
-          this.setState(old => ({ progress: old.progress + 1 }))
+          await this.setProgress(progress + 1)
         })
       )
 
