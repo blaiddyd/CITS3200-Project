@@ -1,6 +1,17 @@
 import React from 'react'
 import UploadBox from '../UploadBox'
+import readFile from '../../helpers/readFile'
 
+/**
+ * Component to show upload forms
+ * @example Upload form that accept PNG images and print the files to console
+ * <UploadForm
+ *  accept=".png"
+ *  onSubmit={(apiKey, files) => console.log(apiKey, files)}
+ *  loading={loading}
+ *  progress={progressNumber}
+ * />
+ */
 class UploadForm extends React.Component {
   state = {
     files: [],
@@ -21,7 +32,8 @@ class UploadForm extends React.Component {
 
   handleSubmit = async () => {
     const { apiKey, files } = this.state
-    this.props.onSubmit(apiKey, files)
+    const keyData = await readFile(apiKey)
+    this.props.onSubmit(keyData, files)
   }
 
   render() {

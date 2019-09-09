@@ -3,7 +3,6 @@ import PageHeader from '../../components/PageHeader'
 import UploadForm from '../../components/UploadForm'
 import Router from 'next/router'
 import createProject from '../../helpers/createProject'
-import readFile from '../../helpers/readFile'
 import plimit from 'p-limit'
 import config from '../../config'
 import uploadImage from '../../helpers/uploadImage'
@@ -17,10 +16,8 @@ const Submit = () => {
   const handleSubmit = async (apiKey, images) => {
     setLoading(true)
     try {
-      const apiKeyData = await readFile(apiKey)
-
       // create a project
-      const project = await createProject(apiKeyData)
+      const project = await createProject(apiKey)
       const projectId = project._id
 
       // upload each image and link to project
