@@ -3,5 +3,10 @@
     "name": "Ecological Image Classification",
     "description": "Vision",
     "path": "/eco-vision"
+  },
+  {
+    "name": "Video Intelligence",
+    "description": "Vision",
+    "path": "/video"
   }
 ]
