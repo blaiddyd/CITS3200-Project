@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PageHeader from '../../components/PageHeader'
-import UploadForm from '../../components/UploadFormVid'
+import UploadForm from '../../components/UploadForm'
 import Router from 'next/router'
 import createProject from '../../helpers/createProject'
 import readFile from '../../helpers/readFile'
@@ -48,6 +48,7 @@ const Submit = () => {
           onSubmit={handleSubmit}
           loading={loading}
           progress={progress}
+		      multiFile={false}
         />
       </div>
     </>
