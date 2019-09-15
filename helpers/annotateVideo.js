@@ -1,66 +1,39 @@
-const video = require('@google-cloud/video-intelligence').v1p2beta1;
+const video = require('@google-cloud/video-intelligence').v1
+const Project = require('mongoose').model('project')
 
 /**
  * @function annotateVideo
  * @description This function annotates a video
  * @param {string} uri This is a URI string linking to the image to be parsed
- * @returns 
+ * @returns
  */
-async function annotateVideo(gcsUri){	 
-    try {
-        // Creates a client
-        const client = new video.VideoIntelligenceServiceClient(
-            //optional authentication parameters
-        );
+async function annotateVideo(gcsUri) {
+  try {
+    const proj = await Project.findOne({ _id: '5d5cfc79f8f447106713d6e3' })
+    const apiKey = proj.apiKey
+    // Creates a client
+    const client = new video.VideoIntelligenceServiceClient({ apiKey })
+    // optional authentication parameters
 
-        const request = {
-            inputUri: gcsUri,
-            features: ['LABEL_DETECTION'],
-            //can also specify outputUri here. result will be stored as a .json
-        };
+    const request = {
+      inputUri: gcsUri,
+      features: ['LABEL_DETECTION']
+      // can also specify outputUri here. result will be stored as a .json
+    }
 
-        // Detects labels in a video
-        const [operation] = await client.annotateVideo(request);
-        console.log('Waiting for operation to complete...');
-        const [operationResult] = await operation.promise();
+    // Detects labels in a video
+    const [operation] = await client.annotateVideo(request)
+    console.log('Waiting for operation to complete...')
+    const [operationResult] = await operation.promise()
 
-        // Gets annotations for video
-        const annotations = operationResult.annotationResults[0];
+    // Gets annotations for video
+    const annotations = operationResult.annotationResults[0]
 
-        const labels = annotations.segmentLabelAnnotations;
-        labels.forEach(label => {
-            console.log(`Label ${label.entity.description} occurs at:`);
-            label.segments.forEach(segment => {
-                const time = segment.segment;
-                if (time.startTimeOffset.seconds === undefined) {
-                time.startTimeOffset.seconds = 0;
-                }
-                if (time.startTimeOffset.nanos === undefined) {
-                time.startTimeOffset.nanos = 0;
-                }
-                if (time.endTimeOffset.seconds === undefined) {
-                time.endTimeOffset.seconds = 0;
-                }
-                if (time.endTimeOffset.nanos === undefined) {
-                time.endTimeOffset.nanos = 0;
-                }
-                console.log(
-                `\tStart: ${time.startTimeOffset.seconds}` +
-                    `.${(time.startTimeOffset.nanos / 1e6).toFixed(0)}s`
-                );
-                console.log(
-                `\tEnd: ${time.endTimeOffset.seconds}.` +
-                    `${(time.endTimeOffset.nanos / 1e6).toFixed(0)}s`
-                );
-                console.log(`\tConfidence: ${segment.confidence}`);
+    const labels = annotations.segmentLabelAnnotations
 
-            //want to write the label and its associated info to a json file??
-            //need to store the info back into the project, 
-            //but it is currently only set up for images
-            });
-        });
-    } catch (e) {
-        if (e) throw e
-      }
+    return labels
+  } catch (e) {
+    if (e) throw e
+  }
 }
-module.exports = annotateVideo;
+module.exports = annotateVideo
