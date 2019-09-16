@@ -47,14 +47,14 @@ const Progress = () => {
 const Results = props => {
   const done = false
   const icon = done ? 'check' : 'times'
-
+  const msg = done ? 'Processed' : 'Processing'
   return (
     <>
       <span className="fa-stack">
         <i className="fas fa-square-full fa-stack-2x"></i>
         <i className={`fas fa-${icon} fa-stack-1x fa-inverse`}></i>
       </span>
-      <h5 className="mt-2">Task submitted</h5>
+      <h5 className="mt-2 mb-0">{msg}</h5>
     </>
   )
 }
