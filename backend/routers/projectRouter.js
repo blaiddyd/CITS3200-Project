@@ -3,23 +3,14 @@
 const router = require('express').Router()
 router.use(require('express').json())
 
-const config = require('../../config')
 const multer = require('../middleware/multer')
 const GCSUpload = require('../middleware/gcsUpload')
-const uuid = require('uuid/v4')
-const path = require('path')
-
 const Project = require('mongoose').model('project')
 const Image = require('mongoose').model('image')
 const videoModel = require('../models/videoModel')
 const Video = require('mongoose').model(videoModel.modelName)
 
-const ensureDirectory = require('../../helpers/ensureDirectory')
-const downloadFromGCP = require('../../helpers/downloadFromGCP')
-const dirToZip = require('../../helpers/dirToZip')
-
-const annotateImages = require('../../helpers/annotateImages')
-const annotateVideo = require('../../helpers/annotateVideo')
+const { modulesMap } = require('../../modules')
 
 router.use(require('express').json())
 
@@ -182,21 +173,20 @@ router.delete('/:id', async (req, res) => {
 */
 router.get('/annotate/:id', async (req, res) => {
   try {
-    const proj = await Project.findOne({ _id: req.params.id })
-    if (!proj) {
+    const project = await Project.findOne({ _id: req.params.id })
+    if (!project) {
       return res
         .status(400)
         .json({ msg: 'No project exists with the given id.' })
     }
 
-    const { apiKey, imageIDs, videoID } = proj
-
     // NOTE: not await to run in background
-    if (imageIDs) annotateImages(apiKey, imageIDs)
-    if (videoID) annotateVideo(apiKey, videoID)
+    const processor = modulesMap.get('Ecological Image Classification')
+    processor.process(project)
 
     res.json({ msg: `Annotating project ${req.params.id} in the background.` })
   } catch (error) {
+    console.error(error)
     res.status(400).json({ error })
   }
 })
@@ -208,41 +198,17 @@ router.get('/annotate/:id', async (req, res) => {
 */
 router.get('/download/:id/:match', async (req, res) => {
   try {
-    const proj = await Project.findOne({ _id: req.params.id })
-    if (!proj) {
+    const project = await Project.findOne({ _id: req.params.id })
+    if (!project) {
       res.status(400).json({ msg: 'Project ID not found.' })
     }
 
-    const genUUID = uuid()
-    // absolute path to root/temp/uuid
-    const directory = path.join(__dirname, '../../', `temp/${genUUID}`)
-    // absolute path to root/temp/zips/uuid.zip
-    const zipName = path.join(__dirname, '../../', `temp/${genUUID}.zip`)
-    await ensureDirectory(directory)
+    const type = req.params.match
 
-    const imageIDs = proj.imageIDs
-    const imageFilenames = []
-    await Promise.all(
-      imageIDs.map(async id => {
-        const image = await Image.findOne({ _id: id })
-        if (!image) {
-          return
-        }
-        if (req.params.match === 'Blank') {
-          if (image.matched.length === 0) {
-            imageFilenames.push(image.filename)
-          }
-          return
-        }
-        if (image.matched.includes(req.params.match)) {
-          imageFilenames.push(image.filename)
-        }
-      })
-    )
+    const processor = modulesMap.get('Ecological Image Classification')
+    const filename = await processor.download(project, type)
 
-    await downloadFromGCP(imageFilenames, config.storage.bucket, directory)
-    await dirToZip(directory, zipName)
-    await res.download(zipName, `${req.params.match}.zip`)
+    res.download(filename, `${type}.zip`)
   } catch (error) {
     res.status(400).json({ error })
   }

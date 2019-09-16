@@ -1,25 +1,28 @@
-const Module = require('../Module')
-const annotateImages = require('../../helpers/annotateImages')
+const Module = require('./Module')
+const annotateImages = require('../helpers/annotateImages')
 const ObjectId = require('mongodb').ObjectId
 const uuid = require('uuid/v4')
 const path = require('path')
-const ensureDirectory = require('../../helpers/ensureDirectory')
-const downloadFromGCP = require('../../helpers/downloadFromGCP')
-const dirToZip = require('../../helpers/dirToZip')
-const config = require('../../config')
+const ensureDirectory = require('../helpers/ensureDirectory')
+const downloadFromGCP = require('../helpers/downloadFromGCP')
+const dirToZip = require('../helpers/dirToZip')
+const config = require('../config')
+const imageModel = require('../backend/models/imageModel')
+const Image = require('mongoose').model(imageModel.modelName)
 
 const ImageModule = new Module('Ecological Image Classification', {
-  task: project => {
-    const { apiKey, resources } = project
-    annotateImages(apiKey, resources)
+  type: 'Vision',
+  task: async project => {
+    const { apiKey, imageIDs } = project
+    await annotateImages(apiKey, imageIDs)
   },
   progress: async project => {
     var pendingURLs = []
     var animalURLs = []
     var blankURLs = []
 
-    const { resources } = project
-    for (const val of resources) {
+    const { imageIDs } = project
+    for (const val of imageIDs) {
       var img = new ObjectId(val)
       const currentImage = await Image.findOne({ _id: img })
       if (currentImage.status === 'Pending') {
@@ -48,10 +51,10 @@ const ImageModule = new Module('Ecological Image Classification', {
     const zipName = path.join(__dirname, '../../', `temp/${genUUID}.zip`)
     await ensureDirectory(directory)
 
-    const { resources } = project
+    const { imageIDs } = project
     const images = []
     await Promise.all(
-      resources.map(async id => {
+      imageIDs.map(async id => {
         const image = await Image.findOne({ _id: id })
         if (!image) {
           return
@@ -70,7 +73,8 @@ const ImageModule = new Module('Ecological Image Classification', {
 
     await downloadFromGCP(images, config.storage.bucket, directory)
     await dirToZip(directory, zipName)
+    return zipName
   }
 })
 
-exports.default = ImageModule
+module.exports = ImageModule

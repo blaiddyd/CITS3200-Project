@@ -1,57 +1,27 @@
+const slugify = require('slugify')
+
 class Module {
-  /** The module's name */
-  name = ''
-
-  /**
-   * The module type
-   * @example Vision
-   */
-  type = ''
-
-  /**
-   * Method to process uploaded resources
-   * @param project Project
-   * @param project.apiKey string
-   * @param project.resources string[]
-   * @param project.title string
-   * @return
-   */
-  process = project => {}
-
-  /**
-   * Method to report on the progress of a task
-   * @param project Project
-   * @param project.apiKey string
-   * @param project.resources string[]
-   * @param project.title string
-   * @return any
-   */
-  progress = project => ({})
-
-  /**
-   * Method generate download resources for a task
-   * @param project Project
-   * @param project.apiKey string
-   * @param project.resources string[]
-   * @param project.title string
-   * @param type string | undefined optionally passed from request (e.g. animal, blank)
-   * @return any
-   */
-  download = (project, type) => null
+  validate(name, options) {
+    if (!name) throw new Error('A module name must be specified')
+    const { task, progress, download } = options
+    if (!task) throw new Error('A module processing method must be specified')
+    if (!progress) throw new Error('A module progress method must be specified')
+    if (!download) throw new Error('A module download method must be specified')
+  }
 
   constructor(name, options) {
-    const {
-      type = '',
-      task = () => {},
-      progress = () => ({}),
-      download = () => null
-    } = options
+    const { type = '', task, progress, download, multi = true } = options
+
+    this.validate(name, options)
+
     this.name = name
+    this.slug = slugify(name, { lower: true })
     this.type = type
+    this.multi = multi
     this.process = task
     this.progress = progress
     this.download = download
   }
 }
 
-exports.default = Module
+module.exports = Module
