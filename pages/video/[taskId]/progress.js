@@ -2,8 +2,6 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import useAxios from 'axios-hooks'
 import PageHeader from '../../../components/PageHeader'
-import TitleGroup from '../../../components/TitleGroup'
-import ResultCollapse from '../../../components/ResultCollapse'
 import BlockButton from '../../../components/BlockButton'
 
 const Progress = () => {
@@ -33,11 +31,7 @@ const Progress = () => {
 
   return (
     <div>
-      <PageHeader
-        title={title}
-        subtitle={subtitle}
-        extra={<Stats data={data} />}
-      />
+      <PageHeader title={title} subtitle={subtitle} />
       <div className="border-bottom">
         <div className="container pt-3 pb-4">
           <Results data={data} />
@@ -50,59 +44,35 @@ const Progress = () => {
   )
 }
 
-const Stats = props => {
-  const { data } = props
-  const { pending, animal, blank } = data
-
-  const total = pending.length + animal.length + blank.length
-  const percentage = Math.trunc((1 - pending.length / total) * 100)
-  const progress = `${percentage}%`
-  return (
-    <div className="row">
-      <div className="col-6">
-        <TitleGroup title={progress} subtitle="Progress" />
-      </div>
-      <div className="col-2">
-        <TitleGroup title={pending.length} subtitle="Pending" />
-      </div>
-      <div className="col-2">
-        <TitleGroup title={animal.length} subtitle="Animal" />
-      </div>
-      <div className="col-2">
-        <TitleGroup title={blank.length} subtitle="Blank" />
-      </div>
-    </div>
-  )
-}
-
 const Results = props => {
-  const { pending, blank, animal } = props.data
+  const done = false
+  const icon = done ? 'check' : 'times'
 
   return (
     <>
-      <ResultCollapse name="Pending" data={pending} className="mb-3" />
-      <ResultCollapse name="Animal" data={animal} className="mb-3" />
-      <ResultCollapse name="Blank" data={blank} />
+      <span className="fa-stack">
+        <i className="fas fa-square-full fa-stack-2x"></i>
+        <i className={`fas fa-${icon} fa-stack-1x fa-inverse`}></i>
+      </span>
+      <h5 className="mt-2">Task submitted</h5>
     </>
   )
 }
 
 const Download = props => {
   const { taskId } = props
-  const animalUrl = `/api/projects/download/${taskId}/Animal`
-  const blankUrl = `/api/projects/download/${taskId}/Blank`
+  const url = `/api/projects/download/${taskId}`
   return (
     <>
       <h5 className="mb-2">Results</h5>
       <div className="row">
         <div className="col-6">
-          <a href={animalUrl} rel="noopener noreferrer" target="_blank">
-            <BlockButton title="Animal" subtitle="animal.zip" icon="download" />
-          </a>
-        </div>
-        <div className="col-6">
-          <a href={blankUrl} rel="noopener noreferrer" target="_blank">
-            <BlockButton title="Blank" subtitle="blank.zip" icon="download" />
+          <a href={url} rel="noopener noreferrer" target="_blank">
+            <BlockButton
+              title="Objects"
+              subtitle="objects.csv"
+              icon="download"
+            />
           </a>
         </div>
       </div>
