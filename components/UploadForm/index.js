@@ -12,6 +12,7 @@ import readFile from '../../helpers/readFile'
  *  progress={progressNumber}
  * />
  */
+ 
 class UploadForm extends React.Component {
   state = {
     files: [],
@@ -38,7 +39,7 @@ class UploadForm extends React.Component {
 
   render() {
     const { apiKey, files } = this.state
-    const { loading, progress, accept } = this.props
+    const { loading, progress, accept, multiFile } = this.props
     const canSubmit = files.length && apiKey
     return (
       <>
@@ -57,7 +58,7 @@ class UploadForm extends React.Component {
               onChange={this.handleFileChange}
               value={files}
               accept={accept}
-              multiple={true}
+              multiple={multiFile}
             />
           </div>
         </div>
