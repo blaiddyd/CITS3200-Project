@@ -33,7 +33,7 @@ router.get('/get_text', async (req, res) => {
 
   if (!video) {
     console.log(`No video with ID ${video._id} exists`)
-    res.status(400).json({ msg: `No video with ID ${video._id} exists`})
+    res.status(400).json({ msg: `No video with ID ${video._id} exists` })
     return
   }
 
@@ -46,7 +46,6 @@ router.get('/get_text', async (req, res) => {
       'Content-Type': 'text/plain'
     })
     res.send(text)
-
   } catch (error) {
     res.status(400).json({ error })
   }
@@ -54,11 +53,11 @@ router.get('/get_text', async (req, res) => {
 
 router.get('/get_csv', async (req, res) => {
   const { id, apiKey } = req.body
-  const video = await Video.findOne({ _id: id})
+  const video = await Video.findOne({ _id: id })
 
   if (!video) {
     console.log(`No video with ID ${video._id} exists`)
-    res.status(400).json({ msg: `No video with ID ${video._id} exists`})
+    res.status(400).json({ msg: `No video with ID ${video._id} exists` })
     return
   }
 
@@ -70,7 +69,6 @@ router.get('/get_csv', async (req, res) => {
       'Content-Type': 'text/csv'
     })
     res.send(csv)
-
   } catch (error) {
     res.status(400).json({ error })
   }
