@@ -27,6 +27,10 @@ router.post('/', multer.single('video'), GCSUpload, async (req, res) => {
   }
 })
 
+/**
+ * annotates an image with a given id and api key, and sends a text file with all the labels
+ */
+
 router.get('/get_text', async (req, res) => {
   const { id, apiKey } = req.body
   const video = await Video.findOne({ _id: id })
@@ -51,6 +55,10 @@ router.get('/get_text', async (req, res) => {
   }
 })
 
+
+/**
+ * annotates an image with a given api key and send back the results as a csv file
+ */
 router.get('/get_csv', async (req, res) => {
   const { id, apiKey } = req.body
   const video = await Video.findOne({ _id: id })
