@@ -14,6 +14,11 @@ const ProjectSchema = new Schema(
       required: true,
       default: []
     },
+    videoID: {
+      type: String,
+      required: true,
+      default: []
+    },
     apiKey: {
       type: JSON,
       required: false
