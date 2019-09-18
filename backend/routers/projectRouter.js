@@ -82,25 +82,29 @@ router.post('/:id', multer.single('image'), GCSUpload, async (req, res) => {
 /**
  * This router uploads a single video to GCS and adds it with the project key
  */
-router.post('/:id/video', multer.single('video'), GCSUpload, async(req, res) => {
-  const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
-  try {
-    const project = await Project.findOne({ _id: req.params.id })
-    if (!project) {
-      res.status(400).json({ msg: 'Invalid project ID. '})
-      return
-    }
+router.post(
+  '/:id/video',
+  multer.single('video'),
+  GCSUpload,
+  async (req, res) => {
+    const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
+    try {
+      const project = await Project.findOne({ _id: req.params.id })
+      if (!project) {
+        res.status(400).json({ msg: 'Invalid project ID. ' })
+        return
+      }
 
-    const newVid = await new Video({ title, filename, url }).save()
-    project.update({ videoID: newVid._id })
-    await project.save()
-    console.log(`Video ${newVid._id} saved to project ${req.params.id}`)
-    res.status(200).json(newVid)
+      const newVid = await new Video({ title, filename, url }).save()
+      project.update({ videoID: newVid._id })
+      await project.save()
+      console.log(`Video ${newVid._id} saved to project ${req.params.id}`)
+      res.status(200).json(newVid)
+    } catch (err) {
+      res.status(400).json({ err })
+    }
   }
-  catch (err) {
-    res.status(400).json({ err })
-  }
-})
+)
 
 /* 
     This route gets a single project from MongoDB

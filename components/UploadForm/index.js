@@ -12,7 +12,7 @@ import readFile from '../../helpers/readFile'
  *  progress={progressNumber}
  * />
  */
- 
+
 class UploadForm extends React.Component {
   state = {
     files: [],
