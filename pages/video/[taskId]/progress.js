@@ -62,7 +62,7 @@ const Results = props => {
 
 const Download = props => {
   const { taskId } = props
-  const url = `/api/projects/download/${taskId}`
+  const url = `/api/video/get_csv/${taskId}`
   return (
     <>
       <h5 className="mb-2">Results</h5>

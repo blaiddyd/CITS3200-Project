@@ -13,35 +13,41 @@ const bucket = storage.bucket(config.storage.bucket)
  * @description This function takes the sent file and uploads it to GCP.
  */
 function GCSUpload(req, res, next) {
-  if (!req.file) {
-    return next()
+  try {
+    console.log(req.file)
+    if (!req.file) {
+      return next()
+    }
+
+    req.file.originalname = req.file.originalname.replace(/[\s]/gi, '_')
+
+    const gcsname = Date.now() + '-' + req.file.originalname
+    const file = bucket.file(gcsname)
+    const url = `${config.storage.url}${gcsname}`
+
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype
+      },
+      resumable: false
+    })
+
+    stream.on('error', err => {
+      console.log(err)
+      res.status(400).json({ err })
+    })
+
+    stream.on('finish', () => {
+      req.file.gcsName = gcsname
+      req.file.gcsUrl = url
+      next()
+    })
+
+    stream.end(req.file.buffer)
+  } catch (error) {
+    console.error(error)
+    throw error
   }
-
-  req.file.originalname = req.file.originalname.replace(/[\s]/gi, '_')
-
-  const gcsname = Date.now() + '-' + req.file.originalname
-  const file = bucket.file(gcsname)
-  const url = `${config.storage.url}${gcsname}`
-
-  const stream = file.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    },
-    resumable: false
-  })
-
-  stream.on('error', err => {
-    console.log(err)
-    res.status(400).json({ err })
-  })
-
-  stream.on('finish', () => {
-    req.file.gcsName = gcsname
-    req.file.gcsUrl = url
-    next()
-  })
-
-  stream.end(req.file.buffer)
 }
 
 module.exports = GCSUpload

@@ -97,8 +97,9 @@ router.post(
       }
 
       const newVid = await new Video({ title, filename, url }).save()
-      project.update({ videoID: newVid._id })
-      await project.save()
+      project.videoID = newVid._id
+      const newP = await project.save()
+      console.log(url, newVid._id, newP.videoID)
       console.log(`Video ${newVid._id} saved to project ${req.params.id}`)
       res.status(200).json(newVid)
     } catch (err) {

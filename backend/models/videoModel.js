@@ -33,9 +33,8 @@ const VideoSchema = new Schema(
     },
 
     result: {
-      type: Array,
-      required: true,
-      default: []
+      type: String,
+      required: false
     }
   },
   {
