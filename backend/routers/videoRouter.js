@@ -10,6 +10,8 @@ const videoGetCsv = require('../../helpers/videoGetCsv')
 
 const videoModel = require('../models/videoModel')
 const Video = require('mongoose').model(videoModel.modelName)
+const projectModel = require('../models/projectModel')
+const Project = require('mongoose').model(projectModel.modelName)
 
 /**
  * Uploads a single image onto the Google Cloud Bucket
@@ -27,9 +29,18 @@ router.post('/', multer.single('video'), GCSUpload, async (req, res) => {
   }
 })
 
-router.get('/get_text', async (req, res) => {
-  const { id, apiKey } = req.body
-  const video = await Video.findOne({ _id: id })
+router.get('/get_text/:id', async (req, res) => {
+  const { id } = req.params
+  const project = await Project.findOne({ _id: id })
+
+  if (!project)
+    return res.status(400).json({ error: `No project with id ${id} found` })
+  if (!project.videoID)
+    return res
+      .status(400)
+      .json({ error: `Project ${id} is not a video project` })
+
+  const video = await Video.findOne({ _id: project.videoID })
 
   if (!video) {
     console.log(`No video with ID ${video._id} exists`)
@@ -38,7 +49,7 @@ router.get('/get_text', async (req, res) => {
   }
 
   try {
-    const labels = await annotateVideo(video._id, apiKey)
+    const labels = await annotateVideo(project.apiKey, video._id)
     const text = videoGetTxt(labels)
 
     res.set({
@@ -51,9 +62,18 @@ router.get('/get_text', async (req, res) => {
   }
 })
 
-router.get('/get_csv', async (req, res) => {
-  const { id, apiKey } = req.body
-  const video = await Video.findOne({ _id: id })
+router.get('/get_csv/:id', async (req, res) => {
+  const { id } = req.params
+  const project = await Project.findOne({ _id: id })
+
+  if (!project)
+    return res.status(400).json({ error: `No project with id ${id} found` })
+  if (!project.videoID)
+    return res
+      .status(400)
+      .json({ error: `Project ${id} is not a video project` })
+
+  const video = await Video.findOne({ _id: project.videoID })
 
   if (!video) {
     console.log(`No video with ID ${video._id} exists`)
@@ -62,7 +82,7 @@ router.get('/get_csv', async (req, res) => {
   }
 
   try {
-    const labels = await annotateVideo(video._id, apiKey)
+    const labels = await annotateVideo(project.apiKey, video._id)
     const csv = videoGetCsv(labels)
     res.set({
       'Content-Disposition': 'attachment; filename="out.csv"',

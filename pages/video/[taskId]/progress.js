@@ -9,7 +9,7 @@ const Progress = () => {
   const { taskId } = router.query
 
   if (!taskId) return null
-  const [{ data, loading, error }] = useAxios(`/api/progress/${taskId}`)
+  const [{ data, loading, error }] = useAxios(`/api/progress/${taskId}/video`)
 
   const title = `Task #${taskId}`
   const subtitle = 'Video'
@@ -45,7 +45,8 @@ const Progress = () => {
 }
 
 const Results = props => {
-  const done = false
+  const { status } = props.data
+  const done = status === 'Parsed'
   const icon = done ? 'check' : 'times'
   const msg = done ? 'Processed' : 'Processing'
   return (
