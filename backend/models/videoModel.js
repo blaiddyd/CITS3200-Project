@@ -30,6 +30,12 @@ const VideoSchema = new Schema(
       enum: Object.values(VideoStatus),
       required: true,
       default: VideoStatus.pending
+    },
+
+    result: {
+      type: Array,
+      required: true,
+      default: []
     }
   },
   {

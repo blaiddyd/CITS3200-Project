@@ -19,6 +19,7 @@ const downloadFromGCP = require('../../helpers/downloadFromGCP')
 const dirToZip = require('../../helpers/dirToZip')
 
 const annotateImages = require('../../helpers/annotateImages')
+const annotateVideo = require('../../helpers/annotateVideo')
 
 router.use(require('express').json())
 
@@ -186,8 +187,13 @@ router.get('/annotate/:id', async (req, res) => {
         .status(400)
         .json({ msg: 'No project exists with the given id.' })
     }
+
+    const { apiKey, imageIDs, videoID } = proj
+
     // NOTE: not await to run in background
-    annotateImages(proj.apiKey, proj.imageIDs)
+    if (imageIDs) annotateImages(apiKey, imageIDs)
+    if (videoID) annotateVideo(apiKey, videoID)
+
     res.json({ msg: `Annotating project ${req.params.id} in the background.` })
   } catch (error) {
     res.status(400).json({ error })

@@ -1,22 +1,22 @@
 const video = require('@google-cloud/video-intelligence').v1
-const Project = require('mongoose').model('project')
+const Video = require('../backend/models/videoModel')
 
 /**
  * @function annotateVideo
  * @description This function annotates a video
- * @param {string} uri This is a URI string linking to the image to be parsed
+ * @param {object} apiKey the GCP API key object
+ * @param {string} videoID id of the video on the database
  * @returns
  */
-async function annotateVideo(gcsUri) {
+async function annotateVideo(apiKey, videoID) {
   try {
-    const proj = await Project.findOne({ _id: '5d5cfc79f8f447106713d6e3' })
-    const apiKey = proj.apiKey
+    const record = await Video.findOne({ _id: videoID })
     // Creates a client
     const client = new video.VideoIntelligenceServiceClient({ apiKey })
     // optional authentication parameters
 
     const request = {
-      inputUri: gcsUri,
+      inputUri: record.url,
       features: ['LABEL_DETECTION']
       // can also specify outputUri here. result will be stored as a .json
     }
@@ -30,6 +30,11 @@ async function annotateVideo(gcsUri) {
     const annotations = operationResult.annotationResults[0]
 
     const labels = annotations.segmentLabelAnnotations
+
+    record.status = 'Parsed'
+    record.result = labels
+
+    await record.save()
 
     return labels
   } catch (e) {
