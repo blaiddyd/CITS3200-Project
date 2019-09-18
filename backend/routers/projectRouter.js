@@ -11,12 +11,15 @@ const path = require('path')
 
 const Project = require('mongoose').model('project')
 const Image = require('mongoose').model('image')
+const videoModel = require('../models/videoModel')
+const Video = require('mongoose').model(videoModel.modelName)
 
 const ensureDirectory = require('../../helpers/ensureDirectory')
 const downloadFromGCP = require('../../helpers/downloadFromGCP')
 const dirToZip = require('../../helpers/dirToZip')
 
 const annotateImages = require('../../helpers/annotateImages')
+const annotateVideo = require('../../helpers/annotateVideo')
 
 router.use(require('express').json())
 
@@ -76,6 +79,34 @@ router.post('/:id', multer.single('image'), GCSUpload, async (req, res) => {
     res.status(400).json({ error })
   }
 })
+
+/**
+ * This router uploads a single video to GCS and adds it with the project key
+ */
+router.post(
+  '/:id/video',
+  multer.single('video'),
+  GCSUpload,
+  async (req, res) => {
+    const { originalname: title, gcsName: filename, gcsUrl: url } = req.file
+    try {
+      const project = await Project.findOne({ _id: req.params.id })
+      if (!project) {
+        res.status(400).json({ msg: 'Invalid project ID. ' })
+        return
+      }
+
+      const newVid = await new Video({ title, filename, url }).save()
+      project.videoID = newVid._id
+      const newP = await project.save()
+      console.log(url, newVid._id, newP.videoID)
+      console.log(`Video ${newVid._id} saved to project ${req.params.id}`)
+      res.status(200).json(newVid)
+    } catch (err) {
+      res.status(400).json({ err })
+    }
+  }
+)
 
 /* 
     This route gets a single project from MongoDB
@@ -157,8 +188,13 @@ router.get('/annotate/:id', async (req, res) => {
         .status(400)
         .json({ msg: 'No project exists with the given id.' })
     }
+
+    const { apiKey, imageIDs, videoID } = proj
+
     // NOTE: not await to run in background
-    annotateImages(proj.apiKey, proj.imageIDs)
+    if (imageIDs) annotateImages(apiKey, imageIDs)
+    if (videoID) annotateVideo(apiKey, videoID)
+
     res.json({ msg: `Annotating project ${req.params.id} in the background.` })
   } catch (error) {
     res.status(400).json({ error })

@@ -3,7 +3,6 @@ import PageHeader from '../../components/PageHeader'
 import UploadForm from '../../components/UploadForm'
 import Router from 'next/router'
 import createProject from '../../helpers/createProject'
-import readFile from '../../helpers/readFile'
 import uploadVideo from '../../helpers/uploadVideo'
 import startAnnotation from '../../helpers/startAnnotation'
 import '../../static/css/submit.css'
@@ -11,21 +10,15 @@ import '../../static/css/submit.css'
 const Submit = () => {
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(false)
-  const handleSubmit = async (apiKey, file) => {
-    console.log(apiKey, file)
+  const handleSubmit = async (apiKey, files) => {
     setLoading(true)
     try {
-      // TODO: upload video and start classifying
-      const apiKeyData = await readFile(apiKey)
-
       // create a project
-      const project = await createProject(apiKeyData)
+      const project = await createProject(apiKey)
       const projectId = project._id
 
-      const videoUpload = await uploadVideo(projectId, file)
-
-      // wait for video to be uploaded
-      await Promise(videoUpload)
+      // upload video
+      await uploadVideo(projectId, files[0])
 
       // start annotating
       await startAnnotation(projectId)
@@ -48,7 +41,7 @@ const Submit = () => {
           onSubmit={handleSubmit}
           loading={loading}
           progress={progress}
-		      multiFile={false}
+          multiFile={false}
         />
       </div>
     </>

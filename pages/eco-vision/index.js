@@ -54,7 +54,7 @@ const Submit = () => {
           onSubmit={handleSubmit}
           loading={loading}
           progress={progress}
-		  multiFile={true}
+          multiFile={true}
         />
       </div>
     </>
