@@ -9,7 +9,7 @@
     "dev": " nodemon index.js",
     "lint": "eslint --fix .",
     "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest",
-    "deploy": "npm run build; npm run start"
+    "deploy": "npm install; npm run build; npm run start"
   },
   "repository": {
     "type": "git",
