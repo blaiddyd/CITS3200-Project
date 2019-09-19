@@ -1,7 +1,8 @@
 const videoGetCsv = labels => {
   let outCsv = ''
-  outCsv = 'Entity,Start (s),End (s),Confidence\n'
+  outCsv = 'Categories,Entity,Start (s),End (s),Confidence\n'
   labels.forEach(label => {
+    outCsv += `${label.categoryEntities.map(x => x.description).join(', ')}`
     outCsv += `${label.entity.description}`
     label.segments.forEach(segment => {
       const time = segment.segment
