@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const config = require('../config')
 
 // models
-require('../backend/models/imageModel')
+require('../backend/models/resourceModel')
 require('../backend/models/projectModel')
 
 const connectToDatabase = () =>

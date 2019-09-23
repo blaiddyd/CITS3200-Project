@@ -1,7 +1,9 @@
-const Module = require('./base')
-const videoModel = require('../backend/models/videoModel')
-const Video = require('mongoose').model(videoModel.modelName)
+const { Module, ProgressReport } = require('./base')
+const resourceModel = require('../backend/models/resourceModel')
+const Resource = require('mongoose').model(resourceModel.modelName)
 const annotateVideo = require('../helpers/annotateVideo')
+const path = require('path')
+const fs = require('fs')
 
 const VideoModule = new Module('Video Intelligence', {
   type: 'Video',
@@ -14,18 +16,21 @@ const VideoModule = new Module('Video Intelligence', {
 })
 
 async function task(project) {
-  const { apiKey, videoID } = project
-  await annotateVideo(apiKey, videoID)
+  const { apiKey, resourceIDs } = project
+  await annotateVideo(apiKey, resourceIDs[0])
 }
 async function progress(project) {
-  const videoId = project.videoID
-  const currentVideo = await Video.findOne({ _id: videoId })
-  const done = currentVideo.status === 'Parsed'
-  return { done }
+  const id = project.resourceIDs[0]
+  const resource = await Resource.findOne({ _id: id })
+  const done = resource.status === 'Parsed'
+  return new ProgressReport({ done })
 }
 async function download(project) {
-  const video = await Video.findOne({ _id: project.videoID })
-  return video.result
+  const id = project.resourceIDs[0]
+  const resource = await Resource.findOne({ _id: id })
+  const filePath = path.resolve(`./temp/${resource._id}.csv`)
+  fs.writeFileSync(filePath, resource.result)
+  return filePath
 }
 
 module.exports = VideoModule

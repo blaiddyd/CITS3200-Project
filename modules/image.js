@@ -1,16 +1,16 @@
-const Module = require('./base')
+const { Module, ProgressReport } = require('./base')
 const annotateImages = require('../helpers/annotateImages')
-const ObjectId = require('mongodb').ObjectId
 const uuid = require('uuid/v4')
 const path = require('path')
 const ensureDirectory = require('../helpers/ensureDirectory')
 const downloadFromGCP = require('../helpers/downloadFromGCP')
 const dirToZip = require('../helpers/dirToZip')
 const config = require('../config')
-const imageModel = require('../backend/models/imageModel')
-const Image = require('mongoose').model(imageModel.modelName)
+const resourceModel = require('../backend/models/resourceModel')
+const Resource = require('mongoose').model(resourceModel.modelName)
+var rimraf = require('rimraf')
 
-const ImageModule = new Module('Ecological Image Classification', {
+const resourceModule = new Module('Ecological resource Classification', {
   type: 'Vision',
   allowMultiple: true,
   extensions: '.jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.jpg',
@@ -21,69 +21,69 @@ const ImageModule = new Module('Ecological Image Classification', {
 })
 
 async function task(project) {
-  const { apiKey, imageIDs } = project
-  await annotateImages(apiKey, imageIDs)
+  const { apiKey, resourceIDs } = project
+  await annotateImages(apiKey, resourceIDs)
 }
 
 async function progress(project) {
-  var pendingURLs = []
-  var animalURLs = []
-  var blankURLs = []
+  const pendingURLs = []
+  const animalURLs = []
+  const blankURLs = []
 
-  const { imageIDs } = project
-  for (const val of imageIDs) {
-    var img = new ObjectId(val)
-    const currentImage = await Image.findOne({ _id: img })
-    if (currentImage.status === 'Pending') {
-      pendingURLs.push(currentImage.url)
-    } else if (currentImage.status === 'Parsed') {
-      var matched = currentImage.matched
+  const { resourceIDs } = project
+  for (const id of resourceIDs) {
+    const resource = await Resource.findOne({ _id: id })
+    if (resource.status === 'Pending') {
+      pendingURLs.push(resource.url)
+    } else if (resource.status === 'Parsed') {
+      const { matched } = resource.result
       if (matched.indexOf('Animal') > -1) {
-        animalURLs.push(currentImage.url)
+        animalURLs.push(resource.url)
       } else {
-        blankURLs.push(currentImage.url)
+        blankURLs.push(resource.url)
       }
     }
   }
 
-  return {
+  const done = !pendingURLs.length
+  const data = {
     pending: pendingURLs,
     animal: animalURLs,
     blank: blankURLs
   }
+  return new ProgressReport({ done, data })
 }
 
 async function download(project, type) {
   const genUUID = uuid()
-  // absolute path to root/temp/uuid
-  const directory = path.join(__dirname, '../../', `temp/${genUUID}`)
-  // absolute path to root/temp/zips/uuid.zip
-  const zipName = path.join(__dirname, '../../', `temp/${genUUID}.zip`)
+  const directory = path.join(__dirname, `./temp/${genUUID}`)
+  const zipName = path.resolve(__dirname, `./temp/${genUUID}.zip`)
   await ensureDirectory(directory)
 
-  const { imageIDs } = project
-  const images = []
+  const { resourceIDs } = project
+  const resources = []
   await Promise.all(
-    imageIDs.map(async id => {
-      const image = await Image.findOne({ _id: id })
-      if (!image) {
-        return
-      }
+    resourceIDs.map(async id => {
+      const resource = await Resource.findOne({ _id: id })
+      if (!resource) return
+
+      const { matched } = resource.result
       if (type === 'Blank') {
-        if (image.matched.length === 0) {
-          images.push(image.filename)
+        if (matched.length === 0) {
+          resources.push(resource.filename)
         }
         return
       }
-      if (image.matched.includes(type)) {
-        images.push(image.filename)
+      if (matched.includes(type)) {
+        resources.push(resource.filename)
       }
     })
   )
 
-  await downloadFromGCP(images, config.storage.bucket, directory)
+  await downloadFromGCP(resources, config.storage.bucket, directory)
   await dirToZip(directory, zipName)
+  rimraf.sync(directory)
   return zipName
 }
 
-module.exports = ImageModule
+module.exports = resourceModule

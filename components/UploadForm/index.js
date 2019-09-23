@@ -53,7 +53,7 @@ class UploadForm extends React.Component {
             />
           </div>
           <div className="col-6">
-            <h5 className="mb-3">2. Upload your files</h5>
+            <h5 className="mb-3">2. Upload your file{multiFile && 's'}</h5>
             <UploadBox
               onChange={this.handleFileChange}
               value={files}

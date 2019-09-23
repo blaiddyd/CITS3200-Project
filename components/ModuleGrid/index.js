@@ -1,12 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import useAxios from 'axios-hooks'
+import useModules from '../../helpers/useModules'
 
 /**
  * Component that show a grid of module cards
  */
 const ModuleGrid = () => {
-  const [{ data, loading }] = useAxios(`/api/modules`)
+  const [data, loading] = useModules()
   return (
     <div className="container">
       <div className="row">

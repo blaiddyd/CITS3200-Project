@@ -5,43 +5,41 @@ import Router, { useRouter } from 'next/router'
 import createProject from '../../helpers/createProject'
 import plimit from 'p-limit'
 import config from '../../config'
-import uploadImage from '../../helpers/uploadImage'
+import uploadResource from '../../helpers/uploadResource'
 import startAnnotation from '../../helpers/startAnnotation'
-import useAxios from 'axios-hooks'
+import useModule from '../../helpers/useModule'
 import '../../static/css/submit.css'
 
 const Submit = () => {
   const router = useRouter()
+  const { slug } = router.query
+
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [{ data: modules, loading: modulesLoading }] = useAxios(`/api/modules`)
+  const [data, modulesLoading] = useModule(slug)
 
-  const { slug } = router.query
-  const data = modules && modules.find(m => m.slug === slug)
-  console.log(slug, data)
-
-  const handleSubmit = async (apiKey, images) => {
+  const handleSubmit = async (apiKey, files) => {
     setLoading(true)
     try {
       // create a project
       const project = await createProject(apiKey)
       const projectId = project._id
 
-      // // upload each image and link to project
-      // // only upload x amount of images at a time
-      // const limit = plimit(config.uploadLimit)
-      // const tasks = images.map(image =>
-      //   limit(async () => {
-      //     await uploadImage(projectId, image)
-      //     setProgress(progress + 1)
-      //   })
-      // )
+      // upload each file and link to project
+      // only upload x amount of files at a time
+      const limit = plimit(config.uploadLimit)
+      const tasks = files.map(file =>
+        limit(async () => {
+          await uploadResource(projectId, file)
+          setProgress(progress + 1)
+        })
+      )
 
-      // // wait for all images to be uploaded
-      // await Promise.all(tasks)
+      // wait for all files to be uploaded
+      await Promise.all(tasks)
 
-      // // start annotating
-      // await startAnnotation(projectId)
+      // start annotating
+      await startAnnotation(projectId, data)
 
       // route to confirmation page
       Router.push(`/${data.slug}/${projectId}/confirmation`)

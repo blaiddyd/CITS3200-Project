@@ -5,18 +5,10 @@ const Schema = mongoose.Schema
 
 const ProjectSchema = new Schema(
   {
-    title: {
-      type: String,
-      required: true
-    },
-    imageIDs: {
+    resourceIDs: {
       type: Array,
       required: true,
       default: []
-    },
-    videoID: {
-      type: String,
-      required: false
     },
     apiKey: {
       type: JSON,

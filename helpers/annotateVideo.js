@@ -1,5 +1,5 @@
 const video = require('@google-cloud/video-intelligence').v1
-const Video = require('../backend/models/videoModel')
+const Resource = require('../backend/models/resourceModel')
 const fs = require('fs')
 const path = require('path')
 const ensureDir = require('../helpers/ensureDirectory')
@@ -21,7 +21,7 @@ async function annotateVideo(apiKey, videoID) {
   fs.writeFileSync(keyFilename, apiKey)
 
   try {
-    const record = await Video.findOne({ _id: videoID })
+    const record = await Resource.findOne({ _id: videoID })
     // Creates a client
     const client = new video.VideoIntelligenceServiceClient({ keyFilename })
     console.log('client created')
