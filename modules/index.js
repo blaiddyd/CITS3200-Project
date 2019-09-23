@@ -1,6 +1,7 @@
 const ImageModule = require('./image')
+const VideoModule = require('./video')
 
-const modules = [ImageModule]
+const modules = [ImageModule, VideoModule]
 
 const modulesMap = new Map()
 modules.forEach(m => modulesMap.set(m.name, m))

@@ -2,14 +2,20 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import PageHeader from '../../../components/PageHeader'
+import useAxios from 'axios-hooks'
 
 const Confirmation = () => {
   const router = useRouter()
-  const { taskId } = router.query
+  const [{ data: modules, loading }] = useAxios(`/api/modules`)
+  const { slug, taskId } = router.query
 
+  const data = modules && modules.find(m => m.slug === slug)
   const title = `Task #${taskId}`
-  const subtitle = 'Video Intelligence'
-  const progressUrl = `/video/${taskId}/progress`
+  const subtitle = data.name
+  const progressUrl = `/${data.slug}/${taskId}/progress`
+
+  if (loading) return <i className="fas fa-circle-notch fa-spin" />
+
   return (
     <>
       <PageHeader title={title} subtitle={subtitle} />
@@ -19,7 +25,7 @@ const Confirmation = () => {
           <i className="fas fa-check fa-stack-1x fa-inverse"></i>
         </span>
         <h5 className="mt-2">Task submitted</h5>
-        <p>Your video has been uploaded and is now being processed.</p>
+        <p>Your files have been uploaded and is now being processed.</p>
         <Link href={progressUrl}>
           <button className="mt-3 btn btn-outline-dark rounded-0">
             View progress
