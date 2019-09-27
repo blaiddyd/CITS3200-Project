@@ -46,7 +46,7 @@ async function annotateVideo(apiKey, videoID) {
     const annotations = operationResult.annotationResults[0]
     console.log('annotation completed')
 
-    const labels = annotations.segmentLabelAnnotations
+    const labels = annotations.shotLabelAnnotations
 
     record.status = 'Parsed'
     record.result = getVideoCsv(labels)

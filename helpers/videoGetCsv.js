@@ -1,32 +1,29 @@
+const timeToString = time => {
+  const { seconds = 0, nanos = 0 } = time
+  return `${seconds}.${(nanos / 1e6).toFixed(0)}`
+}
+
 const videoGetCsv = labels => {
-  let outCsv = ''
-  outCsv = 'Entity,Start (s),End (s),Confidence\n'
+  const headers = 'Categories,Entity,Start (s),End (s),Confidence'
+  const rows = []
   labels.forEach(label => {
-    outCsv += `${label.entity.description}`
-    label.segments.forEach(segment => {
-      const time = segment.segment
-      if (time.startTimeOffset.seconds === undefined) {
-        time.startTimeOffset.seconds = 0
-      }
-      if (time.startTimeOffset.nanos === undefined) {
-        time.startTimeOffset.nanos = 0
-      }
-      if (time.endTimeOffset.seconds === undefined) {
-        time.endTimeOffset.seconds = 0
-      }
-      if (time.endTimeOffset.nanos === undefined) {
-        time.endTimeOffset.nanos = 0
-      }
-      outCsv += `,${time.startTimeOffset.seconds}.${(
-        time.startTimeOffset.nanos / 1e6
-      ).toFixed(0)}`
-      outCsv += `,${time.endTimeOffset.seconds}.${(
-        time.endTimeOffset.nanos / 1e6
-      ).toFixed(0)}`
-      outCsv += `,${segment.confidence}\n`
+    const { entity, segments, categoryEntities } = label
+    const categoryEntity = categoryEntities.length && categoryEntities[0]
+    const category = categoryEntity ? categoryEntity.description : ''
+    segments.forEach(data => {
+      const { segment, confidence } = data
+      const { startTimeOffset, endTimeOffset } = segment
+
+      const confidenceData = (confidence * 100).toFixed(2) + '%'
+      const start = timeToString(startTimeOffset)
+      const end = timeToString(endTimeOffset)
+      const entityName = entity.description
+
+      const content = [category, entityName, start, end, confidenceData]
+      rows.push(content.join(','))
     })
   })
-  return outCsv
+  return `${headers}\n${rows.join('\n')}`
 }
 
 module.exports = videoGetCsv
