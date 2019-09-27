@@ -4,7 +4,7 @@ export default async (projectId, file) => {
   const url = `/api/projects/${projectId}`
 
   const payload = new FormData()
-  payload.append('image', file)
+  payload.append('resource', file)
 
   const response = await axios.post(url, payload)
 

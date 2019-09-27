@@ -2,14 +2,20 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import PageHeader from '../../../components/PageHeader'
+import useModule from '../../../helpers/useModule'
 
 const Confirmation = () => {
   const router = useRouter()
-  const { taskId } = router.query
+  const { slug, taskId } = router.query
+  const [data, loading] = useModule(slug)
 
+  const { name, allowMultiple } = data || {}
   const title = `Task #${taskId}`
-  const subtitle = 'Video Intelligence'
-  const progressUrl = `/video/${taskId}/progress`
+  const subtitle = name
+  const progressUrl = `/${slug}/${taskId}/progress`
+
+  if (loading) return <i className="fas fa-circle-notch fa-spin" />
+
   return (
     <>
       <PageHeader title={title} subtitle={subtitle} />
@@ -19,7 +25,10 @@ const Confirmation = () => {
           <i className="fas fa-check fa-stack-1x fa-inverse"></i>
         </span>
         <h5 className="mt-2">Task submitted</h5>
-        <p>Your video has been uploaded and is now being processed.</p>
+        <p>
+          Your file{allowMultiple && 's'} have been uploaded and is now being
+          processed.
+        </p>
         <Link href={progressUrl}>
           <button className="mt-3 btn btn-outline-dark rounded-0">
             View progress

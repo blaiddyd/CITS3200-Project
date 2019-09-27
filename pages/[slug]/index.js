@@ -1,43 +1,48 @@
 import React, { useState } from 'react'
 import PageHeader from '../../components/PageHeader'
 import UploadForm from '../../components/UploadForm'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import createProject from '../../helpers/createProject'
 import plimit from 'p-limit'
 import config from '../../config'
-import uploadImage from '../../helpers/uploadImage'
+import uploadResource from '../../helpers/uploadResource'
 import startAnnotation from '../../helpers/startAnnotation'
+import useModule from '../../helpers/useModule'
 import '../../static/css/submit.css'
 
 const Submit = () => {
+  const router = useRouter()
+  const { slug } = router.query
+
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [data, modulesLoading] = useModule(slug)
 
-  const handleSubmit = async (apiKey, images) => {
+  const handleSubmit = async (apiKey, files) => {
     setLoading(true)
     try {
       // create a project
       const project = await createProject(apiKey)
       const projectId = project._id
 
-      // upload each image and link to project
-      // only upload x amount of images at a time
+      // upload each file and link to project
+      // only upload x amount of files at a time
       const limit = plimit(config.uploadLimit)
-      const tasks = images.map(image =>
+      const tasks = files.map(file =>
         limit(async () => {
-          await uploadImage(projectId, image)
+          await uploadResource(projectId, file)
           setProgress(progress + 1)
         })
       )
 
-      // wait for all images to be uploaded
+      // wait for all files to be uploaded
       await Promise.all(tasks)
 
       // start annotating
-      await startAnnotation(projectId)
+      await startAnnotation(projectId, data)
 
       // route to confirmation page
-      Router.push(`/eco-vision/${projectId}/confirmation`)
+      Router.push(`/${data.slug}/${projectId}/confirmation`)
     } catch (error) {
       console.error(error)
       setProgress(0)
@@ -45,16 +50,19 @@ const Submit = () => {
     }
     setLoading(false)
   }
+
+  if (modulesLoading) return <i className="fas fa-circle-notch fa-spin" />
+  if (!data) return <p>something went wrong loading this module</p>
   return (
     <>
-      <PageHeader title="Ecological Image Classification" subtitle="Module" />
+      <PageHeader title={data.name} subtitle="Module" />
       <div className="container py-3">
         <UploadForm
-          accept=".jpeg,.png,.gif,.bmp,.webp,.raw,.ico,.pdf,.tiff,.jpg"
+          accept={data.extensions}
           onSubmit={handleSubmit}
           loading={loading}
           progress={progress}
-          multiFile={true}
+          multiFile={data.allowMultiple}
         />
       </div>
     </>

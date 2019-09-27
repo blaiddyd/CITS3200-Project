@@ -1,6 +1,6 @@
 const annotateImage = require('./annotateImage')
 // const Image = require("mongoose").model("image");
-const Image = require('../backend/models/imageModel')
+const Resource = require('../backend/models/resourceModel')
 const config = require('../config')
 const vision = require('@google-cloud/vision')
 const path = require('path')
@@ -26,7 +26,7 @@ async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
     const client = new vision.ImageAnnotatorClient({ keyFilename })
 
     const tasks = imageIDs.map(async ID => {
-      const img = await Image.findOne({ _id: ID })
+      const img = await Resource.findOne({ _id: ID })
 
       if (!img) {
         console.log(`Image ${ID} could not be parsed.`)
@@ -36,7 +36,7 @@ async function annotateImages(apiKey, imageIDs, minScore = 0.6) {
       const uri = `gs://${config.storage.bucket}/${img.filename}`
       const matched = await annotateImage(client, uri, img.filename, minScore)
 
-      img.matched = matched.map(match => match.name)
+      img.result = { matched: matched.map(match => match.name) }
       img.status = 'Parsed'
 
       await img.save()

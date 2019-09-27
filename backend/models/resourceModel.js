@@ -3,12 +3,12 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const ImageStatus = {
+const ResourceStatus = {
   pending: 'Pending',
   parsed: 'Parsed'
 }
 
-const ImageSchema = new Schema(
+const ResourceSchema = new Schema(
   {
     title: {
       type: String,
@@ -22,16 +22,16 @@ const ImageSchema = new Schema(
       type: String,
       required: true
     },
-    matched: {
-      type: Array,
+    result: {
+      type: Object,
       required: true,
-      default: []
+      default: {}
     },
     status: {
       type: String,
-      enum: Object.values(ImageStatus),
+      enum: Object.values(ResourceStatus),
       required: true,
-      default: ImageStatus.pending
+      default: ResourceStatus.pending
     }
   },
   {
@@ -39,7 +39,7 @@ const ImageSchema = new Schema(
   }
 )
 
-const Image = mongoose.model('image', ImageSchema)
+const Resource = mongoose.model('resource', ResourceSchema)
 
-module.exports = Image
-exports.ImageStatus = ImageStatus
+module.exports = Resource
+exports.ResourceStatus = ResourceStatus
