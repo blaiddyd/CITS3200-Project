@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ekinbukulmez/CITS3200-Project#readme",
   "dependencies": {
+    "@google-cloud/speech": "^3.3.0",
     "@google-cloud/storage": "^3.1.0",
     "@google-cloud/video-intelligence": "^2.2.2",
     "@google-cloud/vision": "^1.2.0",

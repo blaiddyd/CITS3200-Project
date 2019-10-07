@@ -3,6 +3,7 @@ const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
 const path = require('path')
 const fs = require('fs')
+const analyseAudio = require('../helpers/analyseAudio')
 
 const VideoModule = new Module('Audio Transcription', {
   type: 'Audio',
@@ -15,7 +16,10 @@ const VideoModule = new Module('Audio Transcription', {
 })
 
 /** @stub Implement processing functionality */
-async function task(project) {}
+async function task(project) {
+  const { apiKey, resourceIDs } = project
+  await analyseAudio(apiKey, resourceIDs[0])
+}
 
 /** @stub Implements progress report */
 async function progress(project) 
