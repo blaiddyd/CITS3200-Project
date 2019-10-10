@@ -1,5 +1,5 @@
 class ProgressReport {
-  validate = options => {
+  validate(options) {
     const { done, data } = options
     if (typeof done !== 'boolean')
       throw new Error('property done of progress report must be a boolean')
