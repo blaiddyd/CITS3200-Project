@@ -23,7 +23,9 @@ async function analyseAudio(apiKey, audioID) {
     const client = new speech.SpeechClient({ keyFilename })
 
     const record = await Resource.findOne({ _id: audioID })
-    const uri = record.url.replace('https://storage.googleapis.com/', 'gs://')
+    const uri = record.url
+      .replace('https://storage.googleapis.com/', 'gs://')
+      .toLowerCase()
 
     // get encoding from file extension
     // if file is .flac or .wav, don't need to specify
