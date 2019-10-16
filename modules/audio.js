@@ -5,8 +5,6 @@ const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
 const makeAudioText = require('../helpers/makeAudioText')
 
-
-
 const AudioModule = new Module('Audio Transcription', {
   type: 'Audio',
   allowMultiple: false,
