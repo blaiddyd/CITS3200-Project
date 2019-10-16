@@ -4,7 +4,7 @@ const Resource = require('mongoose').model(resourceModel.modelName)
 const annotateVideo = require('../helpers/annotateVideo')
 const path = require('path')
 const fs = require('fs')
-const decrypt = require('../../helpers/decrypt')
+const decrypt = require('../helpers/decrypt')
 
 const VideoModule = new Module('Video Intelligence', {
   type: 'Video',
