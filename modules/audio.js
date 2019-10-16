@@ -1,4 +1,5 @@
 const { Module, ProgressReport } = require('./base')
+const Resource = require('mongoose').model(resourceModel.modelName)
 const path = require('path')
 const fs = require('fs')
 
@@ -21,6 +22,7 @@ async function progress(project)
   const id = project.resourceIDs[0]
   const resource = await Resource.findOne({ _id: id })
   const done = resource.status === 'Parsed'
+  
   return new ProgressReport({ done })
 }
 
