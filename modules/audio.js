@@ -32,13 +32,8 @@ async function download(project) {
   const resource = await Resource.findOne({ _id: id })
   const transcript = makeAudioText(resource.result);
   const filePath = path.resolve(`./temp/${resource._id}.txt`)
-  
-
-  /*
-  const filePath = path.resolve(`./temp/stub.txt`)
-  fs.writeFileSync(filePath, 'Not yet implemented')
+  fs.writeFileSync(filePath, transcript)
   return filePath
-  */
 }
 
 module.exports = AudioModule
