@@ -39,6 +39,7 @@
     "helmet": "^3.20.0",
     "mongoose": "^5.6.9",
     "multer": "^1.4.2",
+    "music-metadata": "^4.8.0",
     "next": "^9.0.3",
     "node-rsa": "^1.0.6",
     "p-limit": "^2.2.1",
