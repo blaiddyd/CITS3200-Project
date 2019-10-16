@@ -4,6 +4,7 @@ const Resource = require('mongoose').model(resourceModel.modelName)
 const annotateVideo = require('../helpers/annotateVideo')
 const path = require('path')
 const fs = require('fs')
+const decrypt = require('../../helpers/decrypt')
 
 const VideoModule = new Module('Video Intelligence', {
   type: 'Video',
@@ -17,7 +18,8 @@ const VideoModule = new Module('Video Intelligence', {
 
 async function task(project) {
   const { apiKey, resourceIDs } = project
-  await annotateVideo(apiKey, resourceIDs[0])
+  const key = decrypt(apiKey)
+  await annotateVideo(key, resourceIDs[0])
 }
 async function progress(project) {
   const id = project.resourceIDs[0]

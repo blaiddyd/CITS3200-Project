@@ -9,6 +9,7 @@ const config = require('../config')
 const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
 var rimraf = require('rimraf')
+const decrypt = require('../../helpers/decrypt')
 
 const resourceModule = new Module('Ecological resource Classification', {
   type: 'Vision',
@@ -22,7 +23,8 @@ const resourceModule = new Module('Ecological resource Classification', {
 
 async function task(project) {
   const { apiKey, resourceIDs } = project
-  await annotateImages(apiKey, resourceIDs)
+  const key = decrypt(apiKey)
+  await annotateImages(key, resourceIDs)
 }
 
 async function progress(project) {
