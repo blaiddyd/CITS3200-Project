@@ -14,8 +14,8 @@ const config = {
   dev: env.NODE_ENV !== 'production',
   uploadLimit: 10,
   crypto: {
-    publicKeyPath: (() => path.join(__dirname, 'crypto', 'public-key'))(),
-    privateKeyPath: (() => path.join(__dirname, 'crypto', 'private-key'))()
+    publicKeyPath: path.resolve(__dirname, 'crypto', 'public-key'),
+    privateKeyPath: path.resolve(__dirname, 'crypto', 'private-key')
   }
 }
 
