@@ -1,4 +1,5 @@
 const { Module, ProgressReport } = require('./base')
+const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
 const path = require('path')
 const fs = require('fs')
