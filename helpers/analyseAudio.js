@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 const Resource = require('../backend/models/resourceModel')
 const path = require('path')
 const uuid = require('uuid/v4')
 const fs = require('fs')
 const ensureDir = require('./ensureDirectory')
 const speech = require('@google-cloud/speech')
+const mm = require('music-metadata')
 
 /**
  * @function analyseAudio
@@ -44,10 +46,21 @@ async function analyseAudio(apiKey, audioID) {
     // if file is .ogg, need to set sample rate as well
     // get the sample rate from the file ???
     // must be one of 8000, 12000, 16000, 24000, or 48000
-    else if (uri.indexOf('ogg') !== -1) {
+    else if (uri.indexOf('ogg') !== -1) {  
+      var sRate
+      const audioFile = record.url
+     
+      try {
+        const metadata = await mm.parseFile(audioFile)
+        sRate = metadata.sampleRateHertz
+        console.log("Got OGG audio rate: " + sRate)}
+      catch (err) {
+        sRate = 16000
+        console.log('Problem obtaining OGG audio rate, will default to 16,000kHz')}
+
       configuration = {
         encoding: 'OGG_OPUS',
-        sampleRateHertz: 16000,
+        sampleRateHertz: sRate,
         languageCode: 'en-US'
       }
     }
