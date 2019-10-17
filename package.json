@@ -9,7 +9,8 @@
     "dev": " nodemon index.js",
     "lint": "eslint --fix .",
     "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest",
-    "deploy": "npm install; npm run build; npm run start"
+    "deploy": "npm install; npm run build; npm run start",
+    "generate-encryption": "node scripts/encryption.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "mongoose": "^5.6.9",
     "multer": "^1.4.2",
     "next": "^9.0.3",
+    "node-rsa": "^1.0.6",
     "p-limit": "^2.2.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

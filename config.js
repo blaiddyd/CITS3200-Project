@@ -1,3 +1,4 @@
+const path = require('path')
 const { env } = process || { env: {} }
 
 const config = {
@@ -11,7 +12,11 @@ const config = {
   },
   port: env.port || 5000,
   dev: env.NODE_ENV !== 'production',
-  uploadLimit: 10
+  uploadLimit: 10,
+  crypto: {
+    publicKeyPath: path.resolve(__dirname, 'crypto', 'public-key'),
+    privateKeyPath: path.resolve(__dirname, 'crypto', 'private-key')
+  }
 }
 
 module.exports = config

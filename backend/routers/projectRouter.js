@@ -9,6 +9,7 @@ const Project = require('mongoose').model('project')
 const Resource = require('mongoose').model('resource')
 const { modulesMap } = require('../../modules')
 const fs = require('fs')
+const encrypt = require('../../helpers/encrypt')
 
 router.use(require('express').json())
 
@@ -20,7 +21,8 @@ router.use(require('express').json())
 router.post('/', async (req, res) => {
   try {
     const { apiKey } = req.body
-    const project = await new Project({ apiKey }).save()
+    const encryptedApiKey = encrypt(apiKey)
+    const project = await new Project({ apiKey: encryptedApiKey }).save()
     console.log(`Project ${project._id} created.`)
     res.status(200).json(project)
   } catch (error) {
