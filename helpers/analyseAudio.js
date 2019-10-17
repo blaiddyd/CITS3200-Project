@@ -44,10 +44,10 @@ async function analyseAudio(apiKey, audioID) {
       }
     }
     // if file is .ogg, need to set sample rate as well
-    // get the sample rate from the file ???
+    // Get sample rate from file metadata. If cannot, default to 16000
     // must be one of 8000, 12000, 16000, 24000, or 48000
     else if (uri.indexOf('ogg') !== -1) {  
-      var sRate
+      var sRate = 16000
       const audioFile = record.url
      
       try {
@@ -56,7 +56,7 @@ async function analyseAudio(apiKey, audioID) {
         console.log("Got OGG audio rate: " + sRate)}
       catch (err) {
         sRate = 16000
-        console.log('Problem obtaining OGG audio rate, will default to 16,000kHz')}
+        console.log('Problem obtaining OGG audio rate, will default to 16000')}
 
       configuration = {
         encoding: 'OGG_OPUS',
