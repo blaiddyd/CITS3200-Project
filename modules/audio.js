@@ -9,7 +9,7 @@ const decrypt = require('../helpers/decrypt')
 const AudioModule = new Module('Audio Transcription', {
   type: 'Audio',
   allowMultiple: false,
-  extensions: '.mp3,.flac,.ogg,.wav',
+  extensions: '.flac,.ogg,.wav',
   downloadTypes: ['Transcription'],
   task,
   progress,

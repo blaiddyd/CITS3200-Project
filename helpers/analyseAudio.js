@@ -25,9 +25,7 @@ async function analyseAudio(apiKey, audioID) {
     const client = new speech.SpeechClient({ keyFilename })
 
     const record = await Resource.findOne({ _id: audioID })
-    const uri = record.url
-      .replace('https://storage.googleapis.com/', 'gs://')
-      .toLowerCase()
+    const uri = record.url.replace('https://storage.googleapis.com/', 'gs://')
 
     // get encoding from file extension
     // if file is .flac or .wav, don't need to specify
@@ -37,41 +35,40 @@ async function analyseAudio(apiKey, audioID) {
       configuration = {
         languageCode: 'en-US'
       }
-    } else if (uri.indexOf('mp3') !== -1) {
-      configuration = {
-        encoding: 'MP3',
-        languageCode: 'en-US'
-      }
     }
     // if file is .ogg, need to set sample rate as well
     // Get sample rate from file metadata. If cannot, default to 16000
     // must be one of 8000, 12000, 16000, 24000, or 48000
-    else if (uri.indexOf('ogg') !== -1) {  
+    else if (uri.indexOf('ogg') !== -1) {
       var sRate = 16000
       const audioFile = record.url
-     
+
       try {
         const metadata = await mm.parseFile(audioFile)
         sRate = metadata.sampleRateHertz
-        console.log("Got OGG audio rate: " + sRate)}
-      catch (err) {
+        console.log('Got OGG audio rate: ' + sRate)
+      } catch (err) {
         sRate = 16000
-        console.log('Problem obtaining OGG audio rate, will default to 16000')}
+        console.log('Problem obtaining OGG audio rate, will default to 16000')
+      }
 
       configuration = {
-        encoding: 'OGG_OPUS',
+        encoding: 6,
         sampleRateHertz: sRate,
         languageCode: 'en-US'
       }
     }
 
     const request = {
-      audio: uri,
+      audio: { uri },
       config: configuration
     }
 
     // Detects speech in the audio file
-    const [response] = await client.recognize(request)
+    console.log('recognising with params', request)
+    const [operation] = await client.longRunningRecognize(request)
+    const [response] = await operation.promise()
+    console.log(response)
     const transcription = response.results
       .map(result => result.alternatives[0].transcript)
       .join('\n')
