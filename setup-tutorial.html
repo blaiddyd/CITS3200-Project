@@ -56,23 +56,17 @@ eg. <code>STORAGE_BUCKET=my-custom-bucket-name-gcp-ai-is-cool</code></li>
 a. Press <code>Add Members</code><br>
 b. Underneath <code>New Members</code> type <code>allMembers</code> (case sensitive)<br>
 c. Under <code>Select a role</code> choose <code>Storage Admin Object Creator</code> and <code>Storage Admin Object Viewer</code>.</p>
+</li>
+</ol>
 <p><img src="https://imgur.com/RH2d8QQ.png" alt=""></p>
-</li>
-<li>
-<p>Head to <a href="https://www.mongodb.com/cloud/atlas">MongoDB Atlas</a> and create an account.</p>
-</li>
-<li>
-<p>Press <code>build a new cluster</code> in the top right of the dashboard.</p>
-</li>
-<li>
-<p>Ensure that when you pick a cloud provider and region, it is a free tier.</p>
-</li>
-<li>
-<p>Wait up to 10 minutes for the cluster to be created.</p>
-</li>
-<li>
-<p>Press the <code>Connect</code> button when done.</p>
-</li>
+<ol start="18">
+<li>In the storage browser, click the link in the <code>lifecycle</code> column.</li>
+<li>Press <code>add rule</code> and select <code>Age</code>  -&gt; <code>14 days</code> or <code>30 days</code>. For the action set to delete.</li>
+<li>Head to <a href="https://www.mongodb.com/cloud/atlas">MongoDB Atlas</a> and create an account.</li>
+<li>Press <code>build a new cluster</code> in the top right of the dashboard.</li>
+<li>Ensure that when you pick a cloud provider and region, it is a free tier.</li>
+<li>Wait up to 10 minutes for the cluster to be created.</li>
+<li>Press the <code>Connect</code> button when done.</li>
 </ol>
 <p><img src="https://imgur.com/dUdvV99.png" alt="enter image description here"></p>
 <ol start="23">
