@@ -1,4 +1,6 @@
 const { Module, ProgressReport } = require('./base')
+const resourceModel = require('../backend/models/resourceModel')
+const Resource = require('mongoose').model(resourceModel.modelName)
 const path = require('path')
 const fs = require('fs')
 
@@ -16,8 +18,12 @@ const VideoModule = new Module('Audio Transcription', {
 async function task(project) {}
 
 /** @stub Implements progress report */
-async function progress(project) {
-  const done = false
+async function progress(project) 
+{
+  const id = project.resourceIDs[0]
+  const resource = await Resource.findOne({ _id: id })
+  const done = resource.status === 'Parsed'
+  
   return new ProgressReport({ done })
 }
 
