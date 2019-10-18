@@ -1,14 +1,15 @@
-const path = require('path')
-const fs = require('fs')
 const { Module, ProgressReport } = require('./base')
 const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
-const makeAudioText = require('../helpers/makeAudioText')
+const path = require('path')
+const fs = require('fs')
+const analyseAudio = require('../helpers/analyseAudio')
+const decrypt = require('../helpers/decrypt')
 
 const AudioModule = new Module('Audio Transcription', {
   type: 'Audio',
   allowMultiple: false,
-  extensions: '.mp3,.flac,.ogg,.wav',
+  extensions: '.flac,.ogg,.wav',
   downloadTypes: ['Transcription'],
   task,
   progress,
@@ -16,11 +17,18 @@ const AudioModule = new Module('Audio Transcription', {
 })
 
 /** @stub Implement processing functionality */
-async function task(project) {}
+async function task(project) {
+  const { apiKey, resourceIDs } = project
+  const key = decrypt(apiKey)
+  await analyseAudio(key, resourceIDs[0])
+}
 
 /** @stub Implements progress report */
 async function progress(project) {
-  const done = false
+  const id = project.resourceIDs[0]
+  const resource = await Resource.findOne({ _id: id })
+  const done = resource.status === 'Parsed'
+
   return new ProgressReport({ done })
 }
 
@@ -28,9 +36,8 @@ async function progress(project) {
 async function download(project) {
   const id = project.resourceIDs[0]
   const resource = await Resource.findOne({ _id: id })
-  const transcript = makeAudioText(resource.result);
   const filePath = path.resolve(`./temp/${resource._id}.txt`)
-  fs.writeFileSync(filePath, transcript)
+  fs.writeFileSync(filePath, resource.result)
   return filePath
 }
 
