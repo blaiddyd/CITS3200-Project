@@ -34,8 +34,12 @@ async function progress(project) {
 
 /** @stub Implements download function */
 async function download(project) {
-  const filePath = path.resolve(`./temp/stub.txt`)
-  fs.writeFileSync(filePath, 'Not yet implemented')
+  const id = project.resourceIDs[0]
+  const resource = await Resource.findOne({ _id: id })
+  const dir = path.resolve(`./temp`)
+  const filePath = path.resolve(`./temp/${resource._id}.txt`)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir)
+  fs.writeFileSync(filePath, resource.result.transcription)
   return filePath
 }
 

@@ -30,7 +30,9 @@ async function progress(project) {
 async function download(project) {
   const id = project.resourceIDs[0]
   const resource = await Resource.findOne({ _id: id })
+  const dir = path.resolve(`./temp`)
   const filePath = path.resolve(`./temp/${resource._id}.csv`)
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir)
   fs.writeFileSync(filePath, resource.result)
   return filePath
 }

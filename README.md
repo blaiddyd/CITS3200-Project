@@ -29,6 +29,14 @@ npm install
 
 3. run the npm script
 
+Before you perform this step. If this is the first time you are running the project, set up encryption first. Only set up encryption if you haven't done it before as the encryption key needs to be consistent so that we can decrypt/encrypt data from the database.
+
+```
+npm run generate-encryption
+```
+
+After that, start the server:
+
 ```
 npm run dev
 ```

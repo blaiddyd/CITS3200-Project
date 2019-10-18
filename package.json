@@ -36,7 +36,7 @@
     "dotenv": "^8.0.0",
     "exif": "^0.6.0",
     "express": "^4.17.1",
-    "helmet": "^3.20.0",
+    "helmet": "^3.21.1",
     "mongoose": "^5.6.9",
     "multer": "^1.4.2",
     "music-metadata": "^4.8.0",
