@@ -3,11 +3,13 @@ const resourceModel = require('../backend/models/resourceModel')
 const Resource = require('mongoose').model(resourceModel.modelName)
 const path = require('path')
 const fs = require('fs')
+const analyseAudio = require('../helpers/analyseAudio')
+const decrypt = require('../helpers/decrypt')
 
-const VideoModule = new Module('Audio Transcription', {
+const AudioModule = new Module('Audio Transcription', {
   type: 'Audio',
   allowMultiple: false,
-  extensions: '.mp3,.flac,.ogg,.wav',
+  extensions: '.flac,.ogg,.wav',
   downloadTypes: ['Transcription'],
   task,
   progress,
@@ -15,15 +17,18 @@ const VideoModule = new Module('Audio Transcription', {
 })
 
 /** @stub Implement processing functionality */
-async function task(project) {}
+async function task(project) {
+  const { apiKey, resourceIDs } = project
+  const key = decrypt(apiKey)
+  await analyseAudio(key, resourceIDs[0])
+}
 
 /** @stub Implements progress report */
-async function progress(project) 
-{
+async function progress(project) {
   const id = project.resourceIDs[0]
   const resource = await Resource.findOne({ _id: id })
   const done = resource.status === 'Parsed'
-  
+
   return new ProgressReport({ done })
 }
 
@@ -34,4 +39,4 @@ async function download(project) {
   return filePath
 }
 
-module.exports = VideoModule
+module.exports = AudioModule
