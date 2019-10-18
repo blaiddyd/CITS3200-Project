@@ -37,7 +37,7 @@ async function download(project) {
   const id = project.resourceIDs[0]
   const resource = await Resource.findOne({ _id: id })
   const filePath = path.resolve(`./temp/${resource._id}.txt`)
-  fs.writeFileSync(filePath, resource.result)
+  fs.writeFileSync(filePath, resource.result.transcription)
   return filePath
 }
 

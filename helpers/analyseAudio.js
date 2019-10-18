@@ -68,18 +68,14 @@ async function analyseAudio(apiKey, audioID) {
     console.log('recognising with params', request)
     const [operation] = await client.longRunningRecognize(request)
     const [response] = await operation.promise()
-    console.log(response)
     const transcription = response.results
       .map(result => result.alternatives[0].transcript)
       .join('\n')
     console.log(`Transcription: ${transcription}`)
 
-    record.result = transcription
+    record.result = { transcription }
     record.status = 'Parsed'
     await record.save()
-
-    // is this line needed?
-    analyseAudio().catch(console.error)
   } catch (e) {
     if (e) throw e
   }
