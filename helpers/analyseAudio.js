@@ -75,6 +75,7 @@ async function analyseAudio(apiKey, audioID) {
     console.log(`Transcription: ${transcription}`)
 
     record.result = transcription
+    record.status = 'Parsed'
     await record.save()
 
     // is this line needed?
