@@ -147,6 +147,22 @@ async function task(project) {
 
 Every time a user submit a new task, our task function is going to take the filename, generate a new greeting, store this greeting and change the status of the file to `Parsed`!
 
+**Important note on API keys**
+
+The API key stored on the database under [`Project`](#projectmodel) (`project.apiKey`) is encrypted. In order to use this API key, you must first decrypt it. There's a [decrypt](../helpers/decrypt.js) helper function that will turn this key into a usable API key. Example:
+
+```js
+// import the decrypt function
+require('../helpers/decrypt')
+
+async function task(project) {
+  const { apiKey } = project
+  const key = decrypt(apiKey)
+
+  // use key to access Google AI Services
+}
+```
+
 #### 6. Implement progress function
 
 The progress function specifies whether or not the task has finished as well as optionally more information on the percentage of completion. This information can be viewed by users through the UI.
@@ -253,7 +269,7 @@ returns `string` - the absolute path to the file to be downloaded
 Represents a task submitted by a user
 
 - **resourceIDs** (_array_): the ids of resources associated with this project
-- **apiKey** (_object_): the Google Cloud Platform API key provided by the user
+- **apiKey** (_object_): the encrypted Google Cloud Platform API key provided by the user
 
 #### ProgressReport
 

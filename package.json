@@ -9,7 +9,8 @@
     "dev": " nodemon index.js",
     "lint": "eslint --fix .",
     "test": "npm run lint && mocha tests/mocha --timeout 5000 --exit && jest tests/jest",
-    "deploy": "npm install; npm run build; npm run start"
+    "deploy": "npm install; npm run build; npm run start",
+    "generate-encryption": "node scripts/encryption.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
   },
   "homepage": "https://github.com/ekinbukulmez/CITS3200-Project#readme",
   "dependencies": {
-    "@google-cloud/speech": "^3.3.1",
+    "@google-cloud/speech": "^3.3.0",
     "@google-cloud/storage": "^3.1.0",
     "@google-cloud/video-intelligence": "^2.2.2",
     "@google-cloud/vision": "^1.2.0",
@@ -38,7 +39,9 @@
     "helmet": "^3.21.1",
     "mongoose": "^5.6.9",
     "multer": "^1.4.2",
+    "music-metadata": "^4.8.0",
     "next": "^9.0.3",
+    "node-rsa": "^1.0.6",
     "p-limit": "^2.2.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
