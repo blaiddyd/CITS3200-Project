@@ -6,6 +6,8 @@
 2. [Implementing a new module](#implementing-a-new-module)
 3. [Reference](#reference)
 
+---
+
 ## Overview
 
 This project is designed to be easily extensible by creating new modules that extend the functionality of the portal. Each module is represented in the UI by a card on the home page.
@@ -15,6 +17,8 @@ There are 3 built in modules:
 - Ecological Image Classification
 - Video Intelligence
 - Audio Transcription
+
+---
 
 ## Modules
 
@@ -35,6 +39,8 @@ A `Project` contains the links to the files that users have submitted (these are
 A `Resource` is the representation of a file that the user have submitted. It contains information such as the file name and the url of the uploaded file. A `Resource` also holds other information about the file that is specific to the module such as the result (an object containing any key value pairs) and the status of the file (`Pending` or `Parsed`). These information can be freely modified by the module to implement it's processing logic.
 
 For instance, an image that needs to be classified in the Ecological Image Classification module will be assigned the `Pending` status when it is uploaded. Once it is processed, the status is changed to `Parsed` and the result field is populated with the tags that matches with the image. Please refer to [modules/image.js](../modules/image.js) for this implementation.
+
+---
 
 ## Implementing a new module
 
@@ -216,6 +222,30 @@ In this case, the function create a new file under the temp folder with the proj
 #### 8. Rejoice
 
 That's it! With all 3 functions implemented, the Hello World module is now fully functional.
+
+---
+
+## Google AI Services
+
+Each Google API can be accessed as a separate module installed through [NPM (Node Package Manager)](http://npmjs.com). For instance, the Vision API is within the `@google-cloud/vision` package. You can find packages on the NPM registry by searching for "@google-cloud" and install these packages using `npm install PACKAGE_NAME`.
+
+To use the API, you first need an API client. For instance, a vision API client may be initiated as follows:
+
+```js
+const client = new vision.ImageAnnotatorClient({ keyFilename })
+```
+
+From: [modules/image.js](../modules/image.js)
+
+To initialise a client, you will need to provide an API key (this is stored under [`Project.apiKey`](#projectmodel)). Notice that in the snippet above, the key is provided as a file path - `keyFileName`. Whilst you can provide the [required parameters](https://googleapis.dev/nodejs/vision/latest/v1.ImageAnnotatorClient.html#ImageAnnotatorClient) (credentials, apiEndpoint, email, etc...); it is much easier to write the API key that the user has uploaded into a file and providing that file's path to create the client - this is the strategy used in the built-in modules.
+
+Information on how to use each client library can be found in the official SDK reference.
+
+- [Google Vision Node.js SDK](https://googleapis.dev/nodejs/vision/latest/index.html)
+- [Google Video Intelligence Node.js SDK](https://googleapis.dev/nodejs/video/latest/index.html)
+- [Google Cloud Speech Node.js SDK](https://googleapis.dev/nodejs/speech/latest/index.html)
+
+---
 
 ## Reference
 
